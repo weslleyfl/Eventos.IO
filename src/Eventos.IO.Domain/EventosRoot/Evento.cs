@@ -1,15 +1,15 @@
 ﻿using Eventos.IO.Domain.Core.Models;
+using Eventos.IO.Domain.OrganizadoresRoot;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Eventos.IO.Domain.Models
+namespace Eventos.IO.Domain.EventosRoot
 {
     public class Evento : Entity<Evento>
     {
-
 
         public Evento(
             string nome,
