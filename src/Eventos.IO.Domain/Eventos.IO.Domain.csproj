@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Eventos.IO.Domain.Core\Eventos.IO.Domain.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EventosRoot\Commands\" />
-  </ItemGroup>
-
 </Project>
