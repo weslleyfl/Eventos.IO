@@ -36,6 +36,12 @@ namespace Eventos.IO.Domain.EventosRoot.CommandsHandlers
 
             // Persistencia
             _eventoRespository.Add(evento);
+
+            if (Commit())
+            {
+                //Notificar um processo concluido
+                Console.WriteLine("Evento registrado com sucesso");
+            }
         }
 
         public void Handle(AtualizarEventoCommand message)
