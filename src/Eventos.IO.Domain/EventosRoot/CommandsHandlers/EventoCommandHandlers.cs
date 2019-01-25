@@ -1,6 +1,9 @@
 ﻿using Eventos.IO.Domain.CommandHandlers;
+using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Events;
+using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.EventosRoot.Commands;
+using Eventos.IO.Domain.EventosRoot.Events;
 using Eventos.IO.Domain.EventosRoot.Repository;
 using Eventos.IO.Domain.Interfaces;
 using System;
@@ -13,10 +16,16 @@ namespace Eventos.IO.Domain.EventosRoot.CommandsHandlers
     {
         // Injeçao de dependencia
         private readonly IEventoRespository _eventoRespository;
+        private readonly IBus _bus;
+        private readonly IDomainNotificationHandler<DomainNotification> _notifications;
 
-        public EventoCommandHandlers(IEventoRespository eventoRespository, IUnitOfWork uow) : base(uow)
+        public EventoCommandHandlers(IEventoRespository eventoRespository,
+                                     IUnitOfWork uow,
+                                     IBus bus,
+                                     IDomainNotificationHandler<DomainNotification> notifications) : base(uow, bus, notifications)
         {
             _eventoRespository = eventoRespository;
+            _bus = bus;
         }
 
         public void Handle(RegistrarEventoCommand message)
@@ -41,6 +50,7 @@ namespace Eventos.IO.Domain.EventosRoot.CommandsHandlers
             {
                 //Notificar um processo concluido
                 Console.WriteLine("Evento registrado com sucesso");
+                _bus.RaiseEvent(new EventoRegistradoEvent(evento.Id, evento.Nome, evento.DataInicio, evento.DataFim, evento.Gratuito, evento.Valor, evento.Online, evento.NomeDaEmpresa));
             }
         }
 
