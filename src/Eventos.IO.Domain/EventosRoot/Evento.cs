@@ -40,6 +40,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         }
 
+        private Evento() { }
 
         public string Nome { get; private set; }
         public string DescricaoCurta { get; private set; }
@@ -134,5 +135,33 @@ namespace Eventos.IO.Domain.EventosRoot
 
         #endregion
 
+        public static class EventoFactory
+        {
+            public static Evento NovoEventoCompleto(Guid id, string nome, string descricaoCurta, string descricaoLonga, DateTime dateInicio, DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa, Guid? organizadorId)
+            {
+                var evento = new Evento()
+                {
+                    Id = id,
+                    Nome = nome,
+                    DescricaoCurta = descricaoCurta,
+                    DescricaoLonga = descricaoLonga,
+                    DataInicio = dateInicio,
+                    DataFim = dataFim,
+                    Gratuito = gratuito,
+                    Valor = valor,
+                    Online = online,
+                    NomeDaEmpresa = nomeEmpresa
+                };
+
+                if (organizadorId != null)                
+                    evento.Organizador = new Organizador(organizadorId.Value);
+
+                return evento;
+            }
+
+        }
+
     }
+
 }
+

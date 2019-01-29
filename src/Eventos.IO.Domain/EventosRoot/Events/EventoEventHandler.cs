@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eventos.IO.Domain.EventosRoot.EventHandlers
+namespace Eventos.IO.Domain.EventosRoot
 {
     public class EventoEventHandler : IHandler<EventoAtualizadoEvent>, IHandler<EventoExcluidoEvent>, IHandler<EventoRegistradoEvent>
     {

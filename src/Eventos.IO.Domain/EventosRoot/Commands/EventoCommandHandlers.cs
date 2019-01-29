@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Eventos.IO.Domain.EventosRoot.CommandsHandlers
+namespace Eventos.IO.Domain.EventosRoot
 {
     public class EventoCommandHandlers : CommandHandler, IHandler<RegistrarEventoCommand>, IHandler<AtualizarEventoCommand>, IHandler<ExcluirEventoCommand>
     {
@@ -56,7 +56,7 @@ namespace Eventos.IO.Domain.EventosRoot.CommandsHandlers
 
         public void Handle(AtualizarEventoCommand message)
         {
-            throw new NotImplementedException();
+            var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta, message.DescricaoLonga, message.DataInicio, message.DataFim, message.Gratuito, message.Valor, message.Online, message.NomeDaEmpresa, null);
         }
 
         public void Handle(ExcluirEventoCommand message)
