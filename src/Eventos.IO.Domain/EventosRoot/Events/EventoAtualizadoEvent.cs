@@ -9,6 +9,8 @@ namespace Eventos.IO.Domain.EventosRoot.Events
         public EventoAtualizadoEvent(
            Guid id,
            string nome,
+            string descricaoCurta,
+          string descricaoLonga,
            DateTime dateInicio,
            DateTime dataFim,
            bool gratuito,
@@ -18,6 +20,8 @@ namespace Eventos.IO.Domain.EventosRoot.Events
         {
             Id = id;
             Nome = nome;
+            DescricaoCurta = descricaoCurta;
+            DescricaoLonga = descricaoLonga;
             DataInicio = dateInicio;
             DataFim = dataFim;
             Gratuito = gratuito;
