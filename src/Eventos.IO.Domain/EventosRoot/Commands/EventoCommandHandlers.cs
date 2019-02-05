@@ -15,11 +15,11 @@ namespace Eventos.IO.Domain.EventosRoot
     public class EventoCommandHandlers : CommandHandler, IHandler<RegistrarEventoCommand>, IHandler<AtualizarEventoCommand>, IHandler<ExcluirEventoCommand>
     {
         // Injeçao de dependencia
-        private readonly IEventoRespository _eventoRespository;
+        private readonly IEventoRepository _eventoRespository;
         private readonly IBus _bus;
         //private readonly IDomainNotificationHandler<DomainNotification> _notifications;
 
-        public EventoCommandHandlers(IEventoRespository eventoRespository,
+        public EventoCommandHandlers(IEventoRepository eventoRespository,
                                      IUnitOfWork uow,
                                      IBus bus,
                                      IDomainNotificationHandler<DomainNotification> notifications) : base(uow, bus, notifications)
