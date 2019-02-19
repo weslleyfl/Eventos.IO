@@ -51,12 +51,44 @@ namespace Eventos.IO.Domain.EventosRoot
         public decimal Valor { get; private set; }
         public bool Online { get; private set; }
         public string NomeDaEmpresa { get; private set; }
-        public Categoria Categoria { get; private set; }
+        public bool Excluido { get; private set; }        
         public ICollection<Tags> Tags { get; private set; }
-        public Endereco Endereco { get; private set; }
-        public Organizador Organizador { get; private set; }
+
+        // Chave estrangeira (foreign key) EF
+        public Guid? CategoriaId { get; private set; } // ? campo nao obrigatorio EF
+        public Guid? EnderecoId { get; private set; }
+        public Guid OrganizadorId { get; private set; }
 
         //public Dictionary<string, string> ErrosValidacao { get; set; }
+
+        // EF propriedades de navegacao
+        public virtual Categoria Categoria { get; private set; }
+        public virtual Endereco Endereco { get; private set; }
+        public virtual Organizador Organizador { get; private set; }
+
+        public void AtribuirEndereco(Endereco endereco)
+        {
+            if (!endereco.EhValido()) return;
+            Endereco = endereco;
+        }
+
+        public void AtribuirCategoria(Categoria categoria)
+        {
+            if (!categoria.EhValido()) return;
+            Categoria = categoria;
+        }
+
+        public void ExcluirEvento()
+        {
+            // TODO: Deve validar alguma regra?
+            Excluido = true;
+        }
+
+        public void TornarPresencial()
+        {
+            // Alguma validacao de negocio?
+            Online = false;
+        }
 
         public override bool EhValido()
         {
@@ -64,17 +96,22 @@ namespace Eventos.IO.Domain.EventosRoot
             return ValidationResult.IsValid;
         }
 
+
+
         #region Validaçoes
 
         private void Validar()
         {
+            // validaçoes do evento
             ValidarNome();
             ValidarValor();
             ValidarData();
             ValidarLocal();
             ValidarNomeEmpresa();
-
             ValidationResult = Validate(this);
+
+            // Validacoes adicionais 
+            ValidarEndereco();
         }
 
         private void ValidarNome()
@@ -133,6 +170,19 @@ namespace Eventos.IO.Domain.EventosRoot
 
         }
 
+
+        private void ValidarEndereco()
+        {
+            // Regra de negocio - regra de validaçao - se o evento for online nao tem endereço fisico.
+            if (Online) return;
+            if (Endereco.EhValido()) return;
+
+            foreach (var error in Endereco.ValidationResult.Errors)
+            {
+                ValidationResult.Errors.Add(error);
+            }
+        }
+
         #endregion
 
         public static class EventoFactory
@@ -153,7 +203,7 @@ namespace Eventos.IO.Domain.EventosRoot
                     NomeDaEmpresa = nomeEmpresa
                 };
 
-                if (organizadorId != null)                
+                if (organizadorId != null)
                     evento.Organizador = new Organizador(organizadorId.Value);
 
                 return evento;
