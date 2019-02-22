@@ -16,7 +16,9 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
         public bool Gratuito { get; protected set; }
         public decimal Valor { get; protected set; }
         public bool Online { get; protected set; }
-        public string NomeDaEmpresa { get; protected set; }
+        public string NomeEmpresa { get; protected set; }
+        public Guid OrganizadorId { get; protected set; }
+        public Guid CategoriaId { get; protected set; }
 
     }
 }

@@ -86,7 +86,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public void TornarPresencial()
         {
-            // Alguma validacao de negocio?
+            // TODO: Alguma validacao de negocio?
             Online = false;
         }
 
@@ -108,7 +108,7 @@ namespace Eventos.IO.Domain.EventosRoot
             ValidarData();
             ValidarLocal();
             ValidarNomeEmpresa();
-            ValidationResult = Validate(this);
+            ValidationResult = Validate(this); // aqui valida só evento
 
             // Validacoes adicionais 
             ValidarEndereco();
@@ -187,7 +187,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public static class EventoFactory
         {
-            public static Evento NovoEventoCompleto(Guid id, string nome, string descricaoCurta, string descricaoLonga, DateTime dateInicio, DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa, Guid? organizadorId)
+            public static Evento NovoEventoCompleto(Guid id, string nome, string descricaoCurta, string descricaoLonga, DateTime dateInicio, DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa, Guid? organizadorId, Endereco endereco, Guid categoriaId)
             {
                 var evento = new Evento()
                 {
@@ -200,11 +200,16 @@ namespace Eventos.IO.Domain.EventosRoot
                     Gratuito = gratuito,
                     Valor = valor,
                     Online = online,
-                    NomeDaEmpresa = nomeEmpresa
+                    NomeDaEmpresa = nomeEmpresa,
+                    Endereco = endereco,
+                    CategoriaId = categoriaId
                 };
 
                 if (organizadorId != null)
                     evento.Organizador = new Organizador(organizadorId.Value);
+
+                if (online)
+                    evento.Endereco = null;
 
                 return evento;
             }

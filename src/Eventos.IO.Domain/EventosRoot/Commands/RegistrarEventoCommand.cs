@@ -13,7 +13,12 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
             bool gratuito,
             decimal valor,
             bool online,
-            string nomeEmpresa)
+            string nomeEmpresa,
+            Guid organizadorId,
+            Guid categoriaId,
+            IncluirEnderecoEventoCommand endereco
+
+            )
         {
 
             Nome = nome;
@@ -22,8 +27,13 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
             Gratuito = gratuito;
             Valor = valor;
             Online = online;
-            NomeDaEmpresa = nomeEmpresa;
+            NomeEmpresa = nomeEmpresa;
+            OrganizadorId = organizadorId;
+            CategoriaId = categoriaId;
+            Endereco = endereco;
         }
+
+        public IncluirEnderecoEventoCommand Endereco { get; private set; }
 
 
 

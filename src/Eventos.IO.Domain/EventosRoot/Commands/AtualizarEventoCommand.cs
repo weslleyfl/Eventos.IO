@@ -28,7 +28,7 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
             Gratuito = gratuito;
             Valor = valor;
             Online = online;
-            NomeDaEmpresa = nomeEmpresa;
+            NomeEmpresa = nomeEmpresa;
         }
     }
 }
