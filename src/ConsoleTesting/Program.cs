@@ -15,7 +15,7 @@ namespace ConsoleTesting
 
             // Registro com sucesso.
             var cmd = new RegistrarEventoCommand("weslley", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2),
-                                                true, 0, true, "Fundep");
+                                                true, 0, true, "Fundep", Guid.NewGuid(), Guid.NewGuid(), null);
 
             Inicio(cmd);
             bus.SendCommand(cmd);
@@ -23,7 +23,7 @@ namespace ConsoleTesting
 
             // Registro com falha
             cmd = new RegistrarEventoCommand("", DateTime.Now.AddDays(2), DateTime.Now.AddDays(1),
-                                                false, 0, false, "");
+                                                false, 0, false, "", Guid.NewGuid(), Guid.NewGuid(), null);
             Inicio(cmd);
             bus.SendCommand(cmd);
             Fim(cmd);

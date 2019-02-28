@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventos.IO.Domain", "src\Ev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventos.IO.Domain.Core", "src\Eventos.IO.Domain.Core\Eventos.IO.Domain.Core.csproj", "{A16648BC-E7CE-49E8-8B3E-377E5006D829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTesting", "src\ConsoleTesting\ConsoleTesting.csproj", "{8D09D18C-F46B-4891-AE63-306DB050B5B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTesting", "src\ConsoleTesting\ConsoleTesting.csproj", "{8D09D18C-F46B-4891-AE63-306DB050B5B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventos.IO.Infra.Data", "src\Eventos.IO.Infra.Data\Eventos.IO.Infra.Data.csproj", "{CFB5CC23-4B06-49C4-8AFB-525803D85624}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{8D09D18C-F46B-4891-AE63-306DB050B5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D09D18C-F46B-4891-AE63-306DB050B5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D09D18C-F46B-4891-AE63-306DB050B5B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB5CC23-4B06-49C4-8AFB-525803D85624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB5CC23-4B06-49C4-8AFB-525803D85624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB5CC23-4B06-49C4-8AFB-525803D85624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB5CC23-4B06-49C4-8AFB-525803D85624}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{07B1707C-3899-414B-A397-CE6F66102134} = {EBE6A7C4-3FF3-4350-8EDD-DBFA2BB8359F}
 		{A16648BC-E7CE-49E8-8B3E-377E5006D829} = {EBE6A7C4-3FF3-4350-8EDD-DBFA2BB8359F}
 		{8D09D18C-F46B-4891-AE63-306DB050B5B3} = {EBE6A7C4-3FF3-4350-8EDD-DBFA2BB8359F}
+		{CFB5CC23-4B06-49C4-8AFB-525803D85624} = {9D940F4D-A3AA-4A66-BB08-76009EF97A56}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {610B3066-B325-4EC8-AC94-2DFE64E0D24C}

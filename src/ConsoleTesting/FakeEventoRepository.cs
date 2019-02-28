@@ -15,6 +15,31 @@ namespace ConsoleTesting
                 //
             }
 
+            public void Adicionar(Evento obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void AdicionarEndereco(Endereco endereco)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Atualizar(Evento obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void AtualizarEndereco(Endereco endereco)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerable<Evento> Buscar(Expression<Func<Evento, bool>> predicate)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Dispose()
             {
                 throw new NotImplementedException();
@@ -35,9 +60,44 @@ namespace ConsoleTesting
                 return new Evento("FakeEvento", DateTime.Now, DateTime.Now, true, 1, true, "Empresa fake");
             }
 
+            public IEnumerable<Categoria> ObterCategorias()
+            {
+                throw new NotImplementedException();
+            }
+
+            public Endereco ObterEnderecoPorId(Guid id)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerable<Evento> ObterEventoPorOrganizador(Guid organizadorId)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Evento ObterMeuEventoPorId(Guid id, Guid organizadorId)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Evento ObterPorId(Guid id)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerable<Evento> ObterTodos()
+            {
+                throw new NotImplementedException();
+            }
+
             public void Remove(Guid id)
             {
                 //
+            }
+
+            public void Remover(Guid id)
+            {
+                throw new NotImplementedException();
             }
 
             public int SaveChanges()

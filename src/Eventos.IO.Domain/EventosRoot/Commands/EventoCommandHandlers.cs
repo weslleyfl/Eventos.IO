@@ -15,7 +15,7 @@ namespace Eventos.IO.Domain.EventosRoot
     public class EventoCommandHandlers : CommandHandler, IHandler<RegistrarEventoCommand>, IHandler<AtualizarEventoCommand>, IHandler<ExcluirEventoCommand>
     {
         // Injeçao de dependencia
-        private readonly IEventoRepository _eventoRespository;
+        private readonly IEventoRepository _eventoRepository;
         private readonly IBus _bus;
         //private readonly IDomainNotificationHandler<DomainNotification> _notifications;
 
@@ -24,13 +24,14 @@ namespace Eventos.IO.Domain.EventosRoot
                                      IBus bus,
                                      IDomainNotificationHandler<DomainNotification> notifications) : base(uow, bus, notifications)
         {
-            _eventoRespository = eventoRespository;
+            _eventoRepository = eventoRespository;
             _bus = bus;
         }
 
         public void Handle(RegistrarEventoCommand message)
         {
             var endereco = new Endereco(message.Endereco.Id, message.Endereco.Logradouro, message.Endereco.Numero, message.Endereco.Complemento, message.Endereco.Bairro, message.Endereco.CEP, message.Endereco.Cidade, message.Endereco.Estado, message.Endereco.EventoId.Value);
+
             var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta,
                 message.DescricaoLonga, message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
                 message.Online, message.NomeEmpresa, message.OrganizadorId, endereco, message.CategoriaId);
@@ -44,7 +45,7 @@ namespace Eventos.IO.Domain.EventosRoot
             // O Organizador pode registrar um evento? (tipo sera que ele pagou a taxa de abertura)
 
             // Persistencia
-            _eventoRespository.Add(evento);
+            _eventoRepository.Adicionar(evento);
 
             if (Commit())
             {
@@ -57,15 +58,18 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public void Handle(AtualizarEventoCommand message)
         {
+            var eventoAtual = _eventoRepository.ObterPorId(message.Id);
+
+
             if (!EventoExistente(message.Id, message.MessageType)) return;
 
             var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta, message.DescricaoLonga,
                                                                  message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
-                                                                 message.Online, message.NomeEmpresa, null);
+                                                                 message.Online, message.NomeEmpresa, message.OrganizadorId, eventoAtual.Endereco, message.CategoriaId);
 
             if(!EventoValido(evento)) return;
 
-            _eventoRespository.Update(evento);
+            _eventoRepository.Atualizar(evento);
 
             if (Commit())
             {
@@ -79,7 +83,7 @@ namespace Eventos.IO.Domain.EventosRoot
         {
             if (!EventoExistente(message.Id, message.MessageType)) return;
 
-            _eventoRespository.Remove(message.Id);
+            _eventoRepository.Remover(message.Id);
 
             if (Commit())
             {
@@ -99,7 +103,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         private bool EventoExistente(Guid id, string messageType)
         {
-            var evento = _eventoRespository.GetById(id);
+            var evento = _eventoRepository.ObterPorId(id);
 
             if (evento != null) return true;
 

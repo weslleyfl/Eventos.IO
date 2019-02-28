@@ -13,7 +13,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public string Nome { get; private set; }
 
-        // EF Propriedade de Navegação
+        // EF Propriedade de Navegação -- Uma categroria tem varios eventos - 1 para varios
         public virtual ICollection<Evento> Eventos { get; set; }
 
         // Construtor para o EF
