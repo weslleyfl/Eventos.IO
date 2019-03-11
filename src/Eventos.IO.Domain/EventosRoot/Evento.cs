@@ -27,7 +27,7 @@ namespace Eventos.IO.Domain.EventosRoot
             Gratuito = gratuito;
             Valor = valor;
             Online = online;
-            NomeDaEmpresa = nomeEmpresa;
+            NomeEmpresa = nomeEmpresa;
 
             //ErrosValidacao = new Dictionary<string, string>();
 
@@ -50,7 +50,7 @@ namespace Eventos.IO.Domain.EventosRoot
         public bool Gratuito { get; private set; }
         public decimal Valor { get; private set; }
         public bool Online { get; private set; }
-        public string NomeDaEmpresa { get; private set; }
+        public string NomeEmpresa { get; private set; }
         public bool Excluido { get; private set; }        
         public ICollection<Tags> Tags { get; private set; }
 
@@ -164,7 +164,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         private void ValidarNomeEmpresa()
         {
-            RuleFor(c => c.NomeDaEmpresa)
+            RuleFor(c => c.NomeEmpresa)
                 .NotEmpty().WithMessage("O nome do organizador deve ser preenchido")
                 .Length(2, 150).WithMessage("o nome do organizador precisa ter entre 2 e 200 caracteres");
 
@@ -200,13 +200,13 @@ namespace Eventos.IO.Domain.EventosRoot
                     Gratuito = gratuito,
                     Valor = valor,
                     Online = online,
-                    NomeDaEmpresa = nomeEmpresa,
+                    NomeEmpresa = nomeEmpresa,
                     Endereco = endereco,
                     CategoriaId = categoriaId
                 };
 
-                if (organizadorId != null)
-                    evento.Organizador = new Organizador(organizadorId.Value);
+                if (organizadorId.HasValue)
+                    evento.OrganizadorId = organizadorId.Value; 
 
                 if (online)
                     evento.Endereco = null;

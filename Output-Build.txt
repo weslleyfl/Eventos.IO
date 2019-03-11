@@ -1,0 +1,8 @@
+﻿1>------ Build started: Project: Eventos.IO.Infra.Data, Configuration: Debug Any CPU ------
+1>Eventos.IO.Infra.Data -> C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\Eventos.IO.Infra.Data\bin\Debug\netstandard2.0\Eventos.IO.Infra.Data.dll
+2>------ Build started: Project: ConsoleTesting, Configuration: Debug Any CPU ------
+3>------ Build started: Project: Eventos.IO.Site, Configuration: Debug Any CPU ------
+2>ConsoleTesting -> C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\ConsoleTesting\bin\Debug\netcoreapp2.2\ConsoleTesting.dll
+3>Eventos.IO.Site -> C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\Eventos.IO.Site\bin\Debug\netcoreapp2.2\Eventos.IO.Site.dll
+3>Eventos.IO.Site -> C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\Eventos.IO.Site\bin\Debug\netcoreapp2.2\Eventos.IO.Site.Views.dll
+========== Build: 3 succeeded, 0 failed, 2 up-to-date, 0 skipped ==========

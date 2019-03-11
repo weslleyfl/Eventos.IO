@@ -1,9 +1,13 @@
 ﻿using Eventos.IO.Domain.EventosRoot;
 using Eventos.IO.Domain.OrganizadoresRoot;
+using Eventos.IO.Infra.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+
 
 namespace Eventos.IO.Infra.Data.Context
 {
@@ -17,15 +21,24 @@ namespace Eventos.IO.Infra.Data.Context
         // Utilizando Fluent API - Metodo que vai criar um modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Evento>()
-                .Property(e => e.Nome)
-                .HasColumnType("varchar(150)")
-                .IsRequired();
-
+            modelBuilder.ApplyConfiguration(new EventoMapping());
+            modelBuilder.ApplyConfiguration(new OrganizadorMapping());
+            modelBuilder.ApplyConfiguration(new EnderecoMapping());
+            modelBuilder.ApplyConfiguration(new CategoriaMapping());          
 
             base.OnModelCreating(modelBuilder);
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var config = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json")
+               .Build();
+
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+
+        }
 
     }
 }
