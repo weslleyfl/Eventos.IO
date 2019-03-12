@@ -30,7 +30,9 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public void Handle(RegistrarEventoCommand message)
         {
-            var endereco = new Endereco(message.Endereco.Id, message.Endereco.Logradouro, message.Endereco.Numero, message.Endereco.Complemento, message.Endereco.Bairro, message.Endereco.CEP, message.Endereco.Cidade, message.Endereco.Estado, message.Endereco.EventoId.Value);
+            var endereco = new Endereco(message.Endereco.Id, message.Endereco.Logradouro, message.Endereco.Numero,
+                                        message.Endereco.Complemento, message.Endereco.Bairro, message.Endereco.CEP, 
+                                        message.Endereco.Cidade, message.Endereco.Estado, message.Endereco.EventoId.Value);
 
             var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta,
                 message.DescricaoLonga, message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
@@ -60,6 +62,7 @@ namespace Eventos.IO.Domain.EventosRoot
         {
             var eventoAtual = _eventoRepository.ObterPorId(message.Id);
 
+            // TODO: Validar se o evento pertence a pessoa que esta editando
 
             if (!EventoExistente(message.Id, message.MessageType)) return;
 

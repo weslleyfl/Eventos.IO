@@ -8,6 +8,8 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
     {
         public RegistrarEventoCommand(
             string nome,
+            string descricaoCurta,
+            string descricaoLonga,
             DateTime dateInicio,
             DateTime dataFim,
             bool gratuito,
@@ -22,6 +24,8 @@ namespace Eventos.IO.Domain.EventosRoot.Commands
         {
 
             Nome = nome;
+            DescricaoCurta = descricaoCurta;
+            DescricaoLonga = descricaoLonga;
             DataInicio = dateInicio;
             DataFim = dataFim;
             Gratuito = gratuito;
