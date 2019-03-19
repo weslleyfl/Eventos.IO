@@ -13,6 +13,12 @@ using Microsoft.EntityFrameworkCore;
 using Eventos.IO.Site.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Eventos.IO.Application.Interfaces;
+using Eventos.IO.Application.Services;
+using Eventos.IO.Infra.CrossCutting.Bus;
+using Eventos.IO.Infra.CrossCutting.IoC;
+using AutoMapper;
+using Eventos.IO.Application.AutoMapper;
 
 namespace Eventos.IO.Site
 {
@@ -21,6 +27,7 @@ namespace Eventos.IO.Site
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //var rootApp = Configuration[Microsoft.Extensions.Hosting.HostDefaults.ContentRootKey];
         }
 
         public IConfiguration Configuration { get; }
@@ -43,10 +50,18 @@ namespace Eventos.IO.Site
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // proprio para .net core - adicionei no pipeline do .core
+            AutoMapperConfiguration.RegisterMappings();
+            services.AddAutoMapper();           
+            // Injeçao de dependencia 
+            RegisterServices(services);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IHttpContextAccessor accessor)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +87,13 @@ namespace Eventos.IO.Site
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            NativeInjectorBootStrapper.RegisterServices(services);
         }
     }
 }

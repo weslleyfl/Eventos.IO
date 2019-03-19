@@ -19,7 +19,7 @@ namespace Eventos.IO.Infra.Data.Mappings
                 .HasColumnType("varchar(150)");
 
             builder.Property(e => e.DescricaoLonga)
-                .HasColumnType("varchar(max)");
+                .HasColumnType("varchar(2000)");
 
             builder.Property(e => e.NomeEmpresa)
                 .HasColumnType("varchar(150)")

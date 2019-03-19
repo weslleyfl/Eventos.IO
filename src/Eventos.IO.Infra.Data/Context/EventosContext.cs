@@ -31,14 +31,16 @@ namespace Eventos.IO.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var path = @"C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\Eventos.IO.Site\";
             var config = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json")
+               .SetBasePath(path) // (Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                .Build();
 
+           
             optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 
         }
-
+    
     }
 }
