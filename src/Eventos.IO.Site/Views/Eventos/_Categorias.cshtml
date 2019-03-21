@@ -1,8 +1,9 @@
 ﻿@using Eventos.IO.Application.ViewModels
 @model EventoViewModel
+
+<label asp-for="Categoria" class="control-label"></label>
 @{
     var categorias = (IEnumerable<SelectListItem>)new CategoriaViewModel().Categorias();
 }
-<select asp-for="CategoriaId" asp-items="@categorias" class="form-control">
-    
-</select>
+<select asp-for="CategoriaId" asp-items="@categorias" class="form-control"></select>
+<span asp-validation-for="Categoria" class="text-danger"></span>
