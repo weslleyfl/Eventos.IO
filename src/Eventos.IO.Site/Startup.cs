@@ -53,6 +53,7 @@ namespace Eventos.IO.Site
 
             // proprio para .net core - adicionei no pipeline do .core
             AutoMapperConfiguration.RegisterMappings();
+
             services.AddAutoMapper();           
             // Injeçao de dependencia 
             RegisterServices(services);

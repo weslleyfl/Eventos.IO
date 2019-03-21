@@ -7,13 +7,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 
 namespace Eventos.IO.Infra.Data.Context
 {
     public class EventosContext : DbContext
     {
-        public DbSet<Evento> Eventos { get; set; }        
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public EventosContext(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+        public DbSet<Evento> Eventos { get; set; }
         public DbSet<Organizador> Organizadores { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
@@ -24,23 +32,24 @@ namespace Eventos.IO.Infra.Data.Context
             modelBuilder.ApplyConfiguration(new EventoMapping());
             modelBuilder.ApplyConfiguration(new OrganizadorMapping());
             modelBuilder.ApplyConfiguration(new EnderecoMapping());
-            modelBuilder.ApplyConfiguration(new CategoriaMapping());          
+            modelBuilder.ApplyConfiguration(new CategoriaMapping());
 
             base.OnModelCreating(modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var path = @"C:\Projetos\GitHubProjetos\ASPNetCoreLab\Eventos.IO\src\Eventos.IO.Site\";
+        {            
+            string projectRootPath = _hostingEnvironment.ContentRootPath;
+
             var config = new ConfigurationBuilder()
-               .SetBasePath(path) // (Directory.GetCurrentDirectory())
+               .SetBasePath(projectRootPath)
+               //.SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                .Build();
-
-           
+            
             optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 
         }
-    
+
     }
 }
