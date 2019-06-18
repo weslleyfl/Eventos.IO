@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Eventos.IO.Domain.Core.Notifications
 {
+    /// <summary>
+    /// Eventos de notificaçoes quando ocorre problemas erros - DTO
+    /// </summary>
     public class DomainNotification : Event
     {
         public DomainNotification(string key, string value)

@@ -4,6 +4,10 @@ using System.Text;
 
 namespace Eventos.IO.Domain.EventosRoot.Commands
 {
+    /// <summary>
+    /// Comand é como se fosse um DTO - Carregar informaçoes para serem gravadas no banco
+    /// O que voce precisa no minimo para registrar um evento
+    /// </summary>
     public class RegistrarEventoCommand : BaseEventoCommand
     {
         public RegistrarEventoCommand(

@@ -38,13 +38,15 @@ namespace Eventos.IO.Domain.EventosRoot
                 message.DescricaoLonga, message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
                 message.Online, message.NomeEmpresa, message.OrganizadorId, endereco, message.CategoriaId);
 
-
+            // Validaçoes do/no envetno
             if (!EventoValido(evento)) return;
 
             // TODO: Validaçao do negocio no command
             // Pode tratar regras de negocio aqui tambem, se nao for o caso de tratar lá na entidade - Evento
             // Validaçoes de Negocio Exemplo
             // O Organizador pode registrar um evento? (tipo sera que ele pagou a taxa de abertura)
+            // Validar se o nome ja existe no banco - a validaçao é aqui. 
+            // Validaçao que a entidade pode resolvser fica nela. que é responsabilidade dela 
 
             // Persistencia
             _eventoRepository.Adicionar(evento);

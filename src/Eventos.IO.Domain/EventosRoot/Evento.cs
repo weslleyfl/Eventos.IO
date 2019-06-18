@@ -10,6 +10,7 @@ namespace Eventos.IO.Domain.EventosRoot
 {
     public class Evento : Entity<Evento>
     {
+        //TODO: TODA ENTIDADE TEM OBRIGAÇAO DE SE AUTO VALIDAR. Validaçao dentro do modelo - public abstract bool EhValido();
 
         public Evento(
             string nome,
@@ -126,7 +127,7 @@ namespace Eventos.IO.Domain.EventosRoot
             if (!Gratuito)
             {
                 RuleFor(c => c.Valor)
-                    .ExclusiveBetween(1, 50000)
+                    .ExclusiveBetween(1, 50000) // e a regra é feita para dar certo, se nao ela envia a mensagem abaixo
                     .WithMessage("O valor deve estar entre 1.00 e 50.000");
             }
 
