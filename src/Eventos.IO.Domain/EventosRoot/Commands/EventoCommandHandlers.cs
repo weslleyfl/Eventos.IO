@@ -60,13 +60,18 @@ namespace Eventos.IO.Domain.EventosRoot
             }
         }
 
+        /// <summary>
+        /// DTO = AtualizarEventoCommand
+        /// </summary>
+        /// <param name="message"></param>
         public void Handle(AtualizarEventoCommand message)
         {
-            var eventoAtual = _eventoRepository.ObterPorId(message.Id);
-
+            
             // TODO: Validar se o evento pertence a pessoa que esta editando
 
             if (!EventoExistente(message.Id, message.MessageType)) return;
+
+            var eventoAtual = _eventoRepository.ObterPorId(message.Id);
 
             var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta, message.DescricaoLonga,
                                                                  message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
@@ -86,6 +91,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public void Handle(ExcluirEventoCommand message)
         {
+            // Para excluir um evento ele tem que existir
             if (!EventoExistente(message.Id, message.MessageType)) return;
 
             _eventoRepository.Remover(message.Id);

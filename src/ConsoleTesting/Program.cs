@@ -13,6 +13,8 @@ namespace ConsoleTesting
 
             var bus = new FakeBus();
 
+            
+
             // Registro com sucesso.
             //var cmd = new RegistrarEventoCommand("weslley", DateTime.Now.AddDays(1), DateTime.Now.AddDays(2),
             //                                    true, 0, true, "Fundep", Guid.NewGuid(), Guid.NewGuid(), null);

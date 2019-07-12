@@ -11,7 +11,7 @@ namespace Eventos.IO.Domain.EventosRoot
     public class Evento : Entity<Evento>
     {
         //TODO: TODA ENTIDADE TEM OBRIGAÇAO DE SE AUTO VALIDAR. Validaçao dentro do modelo - public abstract bool EhValido();
-
+        // uma class deve ter somente um construtor publico. boas praticas . se precisar mais , criar um factory
         public Evento(
             string nome,
             DateTime dateInicio,
@@ -82,6 +82,7 @@ namespace Eventos.IO.Domain.EventosRoot
         public void ExcluirEvento()
         {
             // TODO: Deve validar alguma regra?
+            // Se alguem ja se inscreveu no evento, nao posso excluir
             Excluido = true;
         }
 
@@ -188,6 +189,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public static class EventoFactory
         {
+            // Isso nao é um construtor ,e um metodo. voce pode colocar outras validaçoes aqui
             public static Evento NovoEventoCompleto(Guid id, string nome, string descricaoCurta, string descricaoLonga, DateTime dateInicio, DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa, Guid? organizadorId, Endereco endereco, Guid categoriaId)
             {
                 var evento = new Evento()

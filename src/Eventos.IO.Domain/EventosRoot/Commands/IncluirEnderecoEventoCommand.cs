@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Eventos.IO.Domain.EventosRoot.Commands
 {
+    /// <summary>
+    /// DTO Endereco
+    /// </summary>
     public class IncluirEnderecoEventoCommand : Command
     {
         public IncluirEnderecoEventoCommand(Guid id, string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado, Guid? eventoId)
