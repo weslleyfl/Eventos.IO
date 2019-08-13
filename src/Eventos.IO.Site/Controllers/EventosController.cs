@@ -58,7 +58,7 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(EventoViewModel eventoViewModel)
         {
-            if (!ModelState.IsValid) return View(eventoViewModel);
+            if (ModelState.IsValid == false) return View(eventoViewModel);
 
             _eventoAppService.Registrar(eventoViewModel);
 

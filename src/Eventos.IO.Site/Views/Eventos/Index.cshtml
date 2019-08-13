@@ -1,25 +1,28 @@
 ﻿@model IEnumerable<Eventos.IO.Application.ViewModels.EventoViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista dos Próximos Eventos";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-left">
+            <a asp-action="Create" class="btn btn-primary">
+                <span class="glyphicon glyphicon-plus-sign">Novo Evento</span>
+            </a> 
+        </div>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DescricaoCurta)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DescricaoLonga)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DataInicio)
@@ -28,68 +31,59 @@
                 @Html.DisplayNameFor(model => model.DataFim)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Gratuito)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Valor)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Online)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeEmpresa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Categoria)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrganizadorId)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescricaoCurta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescricaoLonga)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataFim)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gratuito)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Online)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeEmpresa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Categoria.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrganizadorId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+
+                <td>
+                    @item.DataInicio.ToString("d")
+                </td>
+                <td>
+                    @item.DataFim.ToString("d")
+                </td>
+                <td>
+                    @{
+                        if (item.Gratuito)
+                        {
+                            @Html.DisplayName("Gratuito")
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Online)
+                </td>
+
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-search"></span> Ver Detalhes
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span> Delete
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
