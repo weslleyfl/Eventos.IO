@@ -25,13 +25,14 @@ namespace Eventos.IO.Application.Services
         {
             _bus = bus;
             _mapper = mapper;
-            _eventoRepository = eventoRepository;            
+            _eventoRepository = eventoRepository;
         }
 
 
         public void Registrar(EventoViewModel eventoViewModel)
         {
             var registroCommand = _mapper.Map<RegistrarEventoCommand>(eventoViewModel);
+            //var registroCommand = _mapper.Map<EventoViewModel, RegistrarEventoCommand>(eventoViewModel);
             _bus.SendCommand(registroCommand);
         }
 
@@ -53,7 +54,7 @@ namespace Eventos.IO.Application.Services
         public void Atualizar(EventoViewModel eventoViewModel)
         {
             // TODO: Validar se o organizador é dono do evento
-                                        // new AtualizarEventoCommand() uso o mapper para isso
+            // new AtualizarEventoCommand() uso o mapper para isso
             var atualizarEventoCommand = _mapper.Map<AtualizarEventoCommand>(eventoViewModel);
             _bus.SendCommand(atualizarEventoCommand);
 

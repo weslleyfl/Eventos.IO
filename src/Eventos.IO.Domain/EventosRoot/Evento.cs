@@ -52,7 +52,7 @@ namespace Eventos.IO.Domain.EventosRoot
         public decimal Valor { get; private set; }
         public bool Online { get; private set; }
         public string NomeEmpresa { get; private set; }
-        public bool Excluido { get; private set; }        
+        public bool Excluido { get; private set; }
         public ICollection<Tags> Tags { get; private set; }
 
         // Chave estrangeira (foreign key) EF
@@ -134,8 +134,8 @@ namespace Eventos.IO.Domain.EventosRoot
 
             if (Gratuito)
             {
-                RuleFor(c => c.Valor)
-                    .ExclusiveBetween(0, 0).When(e => e.Gratuito)
+                RuleFor(c => c.Valor)                    
+                    .InclusiveBetween(0, 0).When(e => e.Gratuito)
                     .WithMessage("O valor deve ser 0 para um evento gratuito");
             }
         }
@@ -209,7 +209,7 @@ namespace Eventos.IO.Domain.EventosRoot
                 };
 
                 if (organizadorId.HasValue)
-                    evento.OrganizadorId = organizadorId.Value; 
+                    evento.OrganizadorId = organizadorId.Value;
 
                 if (online)
                     evento.Endereco = null;

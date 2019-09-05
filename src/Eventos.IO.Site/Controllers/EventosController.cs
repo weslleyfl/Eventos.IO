@@ -1,4 +1,5 @@
-﻿using Eventos.IO.Application.Interfaces;
+﻿using AutoMapper;
+using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Site.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace Eventos.IO.Site.Controllers
     {
         // private readonly ApplicationDbContext _context;
         private readonly IEventoAppService _eventoAppService;
+        // private readonly IMapper _mapper;
 
         public EventosController(IEventoAppService eventoAppService)
         {
             //_context = context;
             _eventoAppService = eventoAppService;
+            // _mapper = mapper;
         }
 
         // GET: Eventos
@@ -129,6 +132,6 @@ namespace Eventos.IO.Site.Controllers
 
             return RedirectToAction("Index");
         }
-      
+
     }
 }

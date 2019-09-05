@@ -4,11 +4,8 @@
     ViewData["Title"] = "Lista dos Próximos Eventos";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div class="row">
     <div class="col-md-12">
         <div class="pull-left">
@@ -56,7 +53,8 @@
                     @{
                         if (item.Gratuito)
                         {
-                            @Html.DisplayName("Gratuito")
+                            @*@Html.DisplayName("Gratuito")*@
+                            <label asp-for="@item.Gratuito"> </label>
                         }
                         else
                         {

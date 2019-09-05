@@ -2,18 +2,20 @@
 @model Eventos.IO.Application.ViewModels.EventoViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrar novo Evento";
 }
 
-<h1>Create</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>EventoViewModel</h4>
 <hr />
 
 <div class="row">
     <div class="col-md-4">
 
         <form asp-action="Create">
+
+            <h4>Preencha todos os dados corretamente</h4>
+            <hr />
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -80,16 +82,16 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <div class="col-md-2 col-md-10">
+                    <input type="submit" id="btSubmit" value="Registrar" class="btn btn-success" />
+                    <a asp-action="Index" class="btn btn-info">Voltar para a lista</a>
+                </div>
             </div>
 
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

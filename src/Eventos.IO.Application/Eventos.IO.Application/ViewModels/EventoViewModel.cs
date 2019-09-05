@@ -10,6 +10,11 @@ namespace Eventos.IO.Application.ViewModels
             Id = Guid.NewGuid();
             Endereco = new EnderecoViewModel();
             Categoria = new CategoriaViewModel();
+
+            // TODO: OrganizadorId - Remover isso é para testes
+
+            OrganizadorId = Guid.Parse("C50001AE-AF1F-4D9F-9312-05CA87FD0AFC");
+
         }
 
         [Key]

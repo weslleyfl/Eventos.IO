@@ -26,7 +26,7 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
         public static void RegisterServices(IServiceCollection services)
         {
             // Application
-            services.AddSingleton(Mapper.Configuration);
+            //services.AddSingleton(Mapper.Configuration);
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<IConfigurationProvider>(), sp.GetService));
             services.AddScoped<IEventoAppService, EventoAppService>();
             //services.AddScoped<IOrganizadorAppService, OrganizadorAppService>();

@@ -17,8 +17,9 @@ using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.Services;
 using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.CrossCutting.IoC;
-using AutoMapper;
-using Eventos.IO.Application.AutoMapper;
+using Eventos.IO.Site.Extensions;
+//using AutoMapper;
+//using Eventos.IO.Application.AutoMapper;
 
 namespace Eventos.IO.Site
 {
@@ -45,16 +46,23 @@ namespace Eventos.IO.Site
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // proprio para .net core - adicionei no pipeline do .core
-            AutoMapperConfiguration.RegisterMappings();
+            //Application.AutoMapper.AutoMapperConfiguration.RegisterMappings();
+            //services.AddAutoMapper();           
 
-            services.AddAutoMapper();           
+            //services.AddAutoMapper(typeof(Startup));
+            //services.AddAutoMapper();
+            services.AddAutoMapperSetup();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            
             // Injeçao de dependencia 
             RegisterServices(services);
 
