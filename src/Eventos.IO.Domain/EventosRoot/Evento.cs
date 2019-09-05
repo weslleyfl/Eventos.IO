@@ -135,8 +135,8 @@ namespace Eventos.IO.Domain.EventosRoot
             if (Gratuito)
             {
                 RuleFor(c => c.Valor)                    
-                    .InclusiveBetween(0, 0).When(e => e.Gratuito)
-                    .WithMessage("O valor deve ser 0 para um evento gratuito");
+                    .Equal(0).When(e => e.Gratuito)
+                    .WithMessage("O valor não deve diferente de 0 para um Evento gratuito");
             }
         }
 
