@@ -59,14 +59,13 @@ namespace Eventos.IO.Domain.EventosRoot
         public Guid? CategoriaId { get; private set; } // ? campo nao obrigatorio EF
         public Guid? EnderecoId { get; private set; }
         public Guid OrganizadorId { get; private set; }
-
-        //public Dictionary<string, string> ErrosValidacao { get; set; }
-
+                
         // EF propriedades de navegacao
         public virtual Categoria Categoria { get; private set; }
         public virtual Endereco Endereco { get; private set; }
         public virtual Organizador Organizador { get; private set; }
 
+        // ad hoc get set
         public void AtribuirEndereco(Endereco endereco)
         {
             if (!endereco.EhValido()) return;

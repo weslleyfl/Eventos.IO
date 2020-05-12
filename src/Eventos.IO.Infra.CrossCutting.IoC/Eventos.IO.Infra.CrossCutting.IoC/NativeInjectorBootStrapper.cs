@@ -45,7 +45,7 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
             services.AddScoped<IHandler<EventoExcluidoEvent>, EventoEventHandler>();
 
             // Infra - Data
-            services.AddScoped<IEventoRepository, EventoRepository>();
+            services.AddTransient<IEventoRepository, EventoRepository>();
             //services.AddScoped<IOrganizadorRepository, OrganizadorRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<EventosContext>();

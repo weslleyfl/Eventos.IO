@@ -13,8 +13,8 @@ namespace Eventos.IO.Domain.Core.Notifications
         public DomainNotification(string key, string value)
         {
             DomainNotificationId = Guid.NewGuid();
-            Key = key;
-            Value = value;
+            Key = key; // nome do evento
+            Value = value; // a descricao do erro
             Version = 1;
         }
 

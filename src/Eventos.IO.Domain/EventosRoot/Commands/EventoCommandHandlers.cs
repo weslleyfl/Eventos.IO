@@ -12,6 +12,9 @@ using System.Text;
 
 namespace Eventos.IO.Domain.EventosRoot
 {
+    /// <summary>
+    /// Agrupa as açoes dos comandos CRUD. Parecido com o papel do serviços de dominio
+    /// </summary>
     public class EventoCommandHandlers : CommandHandler, IHandler<RegistrarEventoCommand>, IHandler<AtualizarEventoCommand>, IHandler<ExcluirEventoCommand>
     {
         // Injeçao de dependencia
@@ -45,10 +48,10 @@ namespace Eventos.IO.Domain.EventosRoot
             // Pode tratar regras de negocio aqui tambem, se nao for o caso de tratar lá na entidade - Evento
             // Validaçoes de Negocio Exemplo
             // O Organizador pode registrar um evento? (tipo sera que ele pagou a taxa de abertura)
-            // Validar se o nome ja existe no banco - a validaçao é aqui. 
+            // Validar se o nome ja existe no banco - a validaçao é aqui. Evento com mesmo nome
             // Validaçao que a entidade pode resolvser fica nela. que é responsabilidade dela 
 
-            // Persistencia
+            // Persistencia - Em memoria
             _eventoRepository.Adicionar(evento);
 
             if (Commit())

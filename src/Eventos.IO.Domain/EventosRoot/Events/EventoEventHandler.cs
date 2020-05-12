@@ -11,6 +11,7 @@ namespace Eventos.IO.Domain.EventosRoot
         public void Handle(EventoAtualizadoEvent message)
         {
             // Enviar email - Posso fazer log
+            // Gravar no banco
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Evento atualizado com sucesso ");

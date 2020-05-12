@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Eventos.IO.Domain.Core.Notifications
 {
+    /// <summary>
+    /// Trata notificaçoes de erros. nao é evento nem um comando
+    /// </summary>
     public class DomainNotificationHandler : IDomainNotificationHandler<DomainNotification>
     {
         private List<DomainNotification> _notifications;

@@ -43,7 +43,7 @@ namespace Eventos.IO.Infra.Data.Repository
 
         public virtual IEnumerable<TEntity> ObterTodos()
         {
-            return DbSet.ToList();
+            return DbSet.AsNoTracking().ToList();
         }
 
         public virtual void Remover(Guid id)

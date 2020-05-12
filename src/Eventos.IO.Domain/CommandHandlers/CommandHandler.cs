@@ -8,6 +8,9 @@ using Eventos.IO.Domain.Core.Notifications;
 
 namespace Eventos.IO.Domain.CommandHandlers
 {
+    /// <summary>
+    /// É uma classe base, generica para todos os comandosHandlers
+    /// </summary>
     public abstract class CommandHandler
     {
         private readonly IUnitOfWork _uow;
