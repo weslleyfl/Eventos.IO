@@ -12,8 +12,8 @@ namespace Eventos.IO.Application.ViewModels
             Categoria = new CategoriaViewModel();
 
             // TODO: OrganizadorId - Remover isso é para testes
-
-            OrganizadorId = Guid.Parse("C50001AE-AF1F-4D9F-9312-05CA87FD0AFC");
+            //if (OrganizadorId == Guid.Empty)
+            //    OrganizadorId = Guid.Parse("C50001AE-AF1F-4D9F-9312-05CA87FD0AFC");
 
         }
 
@@ -44,6 +44,7 @@ namespace Eventos.IO.Application.ViewModels
         public bool Gratuito { get; set; }
 
         [Display(Name = "Valor")]
+        [Required(ErrorMessage = "O Valor é requerido. Minimo 0")]
         [DisplayFormat(DataFormatString = "{0:C}")]
         [DataType(DataType.Currency, ErrorMessage = "Moeda em formato inválido")]
         public decimal Valor { get; set; }

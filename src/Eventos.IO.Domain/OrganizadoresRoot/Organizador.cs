@@ -27,7 +27,7 @@ namespace Eventos.IO.Domain.OrganizadoresRoot
 
         public override bool EhValido()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 }

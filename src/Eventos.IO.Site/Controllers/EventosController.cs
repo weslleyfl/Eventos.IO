@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
+using Eventos.IO.Domain.Core.Notifications;
+using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Site.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +15,21 @@ using System.Threading.Tasks;
 
 namespace Eventos.IO.Site.Controllers
 {
-    public class EventosController : Controller
+    [Authorize]
+    public class EventosController : BaseController
     {
         // private readonly ApplicationDbContext _context;
         private readonly IEventoAppService _eventoAppService;
-        
-        public EventosController(IEventoAppService eventoAppService)
+
+        public EventosController(IEventoAppService eventoAppService,
+                                IDomainNotificationHandler<DomainNotification> notifications,
+                                IUser user
+                                ) : base(notifications, user)
         {
             //_context = context;
-            _eventoAppService = eventoAppService;        
+            _eventoAppService = eventoAppService;
         }
+
 
         // GET: Eventos
         public IActionResult Index()
@@ -61,8 +69,11 @@ namespace Eventos.IO.Site.Controllers
         {
             if (ModelState.IsValid == false) return View(eventoViewModel);
 
+            eventoViewModel.OrganizadorId = OrganizadorId;
             _eventoAppService.Registrar(eventoViewModel);
 
+            ViewBag.RetornoPost = OperacaoValida() ? "success,Evento registrado com sucesso!" : "error,Evento não registrado! Verifique as mensagens";
+        
             return View(eventoViewModel);
         }
 
@@ -99,6 +110,7 @@ namespace Eventos.IO.Site.Controllers
 
             _eventoAppService.Atualizar(eventoViewModel);
 
+            ViewBag.RetornoPost = OperacaoValida() ? "success,Evento atualizado com sucesso!" : "error,Evento não pode ser atualizado! Verifique as mensagens";
 
             return View(eventoViewModel);
         }

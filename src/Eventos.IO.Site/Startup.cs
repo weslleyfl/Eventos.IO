@@ -18,6 +18,8 @@ using Eventos.IO.Application.Services;
 using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.CrossCutting.IoC;
 using Eventos.IO.Site.Extensions;
+using Eventos.IO.Domain.Interfaces;
+using Eventos.IO.Site.Models;
 //using AutoMapper;
 //using Eventos.IO.Application.AutoMapper;
 
@@ -51,6 +53,27 @@ namespace Eventos.IO.Site
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Default SignIn settings.
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                // Default Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.AllowedForNewUsers = true;
+
+            });
+
 
             // proprio para .net core - adicionei no pipeline do .core
             //Application.AutoMapper.AutoMapperConfiguration.RegisterMappings();
@@ -59,6 +82,9 @@ namespace Eventos.IO.Site
             //services.AddAutoMapper(typeof(Startup));
             //services.AddAutoMapper();
             services.AddAutoMapperSetup();
+
+            // TODO: Remover pos testes, mover para a camada de IoC
+            services.AddScoped<IUser, AspNetUser>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
