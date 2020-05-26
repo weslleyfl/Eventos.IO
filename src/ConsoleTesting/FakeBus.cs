@@ -37,7 +37,7 @@ namespace ConsoleTesting
                 if (msgType.Equals("RegistrarEventoCommand") || msgType.Equals("ExcluirEventoCommand") ||
                     msgType.Equals("AtualizarEventoCommand"))
                 {
-                    var obje = new EventoCommandHandlers(new FakeEventoRepository(), new FakeUow(), new FakeBus(), new DomainNotificationHandler());
+                    var obje = new EventoCommandHandlers(new FakeEventoRepository(), new FakeUow(), new FakeBus(), new DomainNotificationHandler(), null);
                     ((IHandler<T>)obje).Handle(message);
                 }
 

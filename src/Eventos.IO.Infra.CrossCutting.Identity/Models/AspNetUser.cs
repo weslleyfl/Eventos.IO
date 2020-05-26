@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Eventos.IO.Site.Models
+namespace Eventos.IO.Infra.CrossCutting.Identity.Models
 {
     public class AspNetUser : IUser
     {

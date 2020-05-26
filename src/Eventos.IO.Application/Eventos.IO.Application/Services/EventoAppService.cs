@@ -2,9 +2,9 @@
 using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Domain.Core.Bus;
-using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.EventosRoot.Commands;
 using Eventos.IO.Domain.EventosRoot.Repository;
+using Eventos.IO.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,16 +16,18 @@ namespace Eventos.IO.Application.Services
         private readonly IBus _bus;
         private readonly IMapper _mapper;
         private readonly IEventoRepository _eventoRepository;
-        //private readonly IUser _user;
+        private readonly IUser _user;
 
         public EventoAppService(IBus bus,
                                 IMapper mapper,
-                                IEventoRepository eventoRepository
+                                IEventoRepository eventoRepository,
+                                IUser user
                                 )
         {
             _bus = bus;
             _mapper = mapper;
             _eventoRepository = eventoRepository;
+            _user = user;
         }
 
 
@@ -43,6 +45,7 @@ namespace Eventos.IO.Application.Services
 
         public EventoViewModel ObterPorId(Guid id)
         {
+            // Leitura é feita direto ao respositorio via serviço desta camada, so leitura
             return _mapper.Map<EventoViewModel>(_eventoRepository.ObterPorId(id));
         }
 

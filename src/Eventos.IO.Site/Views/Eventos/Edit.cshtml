@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <form asp-action="Edit">
 
-            <h4>Preencha todos os dados corretamente</h4>
+            <h4>Lembre-se que muitas pessoas já podem ter visto este evento antes de mudar datas e etc.</h4>
             <hr />
 
             @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
@@ -74,7 +74,7 @@
                 <div class="row">
                     <div class="col-md-12 col-md-12">
                         @*<input type="submit" value="Save" class="btn btn-primary" />*@
-                        <button type="submit" class="btn btn-primary"><i class="far fa-save"></i> Salvar</button>
+                        <button id="btSubmit" type="submit" class="btn btn-primary"><i class="fa fa-pencil-square-o"></i> Atualizar</button>
                         <a asp-action="Index" class="btn btn-info"><i class="fas fa-arrow-circle-left"></i> Voltar para a lista</a>
                     </div>
                 </div>
@@ -83,21 +83,32 @@
     </div>
 </div>
 
+<hr style="margin-bottom:20px;" />
+
+<div id="EnderecoForm">
+    <div id="EnderecoTarget">
+        <partial name="_DetalhesEndereco" />
+    </div>
+</div>
+
+<div id="myModal" class="modal fade in">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="myModalContent"></div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/i18n/datepicker.pt-BR.min.js"></script>*@
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" />
 
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 
-
     <script type="text/javascript">
         validacoesEvento();
+        AjaxModal();
     </script>
 
     @{
@@ -107,11 +118,31 @@
             var notificacao = ViewBag.RetornoPost.ToString().Split(',');
 
             <script type="text/javascript">
-
-
                 toastr["@notificacao[0]"]("@notificacao[1]")
-
             </script>
+
+            if (@notificacao[0] == "success")
+            {
+                <script type="text/javascript">             
+
+                    //toastr.options.onHidden = function () {
+                    //    console.log('goodbye');
+                    //    window.location = 'https://localhost:44338/Eventos/MeusEventos';
+                    //};
+                    //toastr.options.onclick = function () {
+                    //    console.log('clicked');
+                    //    window.location = 'https://localhost:44338/Eventos/MeusEventos';
+                    //};
+                    //toastr.options.onCloseClick = function () {
+                    //    console.log('close button clicked');
+                    //    window.location = 'https://localhost:44338/Eventos/MeusEventos';
+                    //};
+
+                    $("#btSubmit").prop("disabled", true);
+                </script>
+            }
+
+
         }
 
     }

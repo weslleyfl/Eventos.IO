@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.Services;
 using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Events;
 using Eventos.IO.Domain.Core.Notifications;
-using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.EventosRoot;
 using Eventos.IO.Domain.EventosRoot.Commands;
 using Eventos.IO.Domain.EventosRoot.Events;
@@ -18,6 +14,8 @@ using Eventos.IO.Domain.OrganizadoresRoot.Commands;
 using Eventos.IO.Domain.OrganizadoresRoot.Events;
 using Eventos.IO.Domain.OrganizadoresRoot.Repository;
 using Eventos.IO.Infra.CrossCutting.Bus;
+using Eventos.IO.Infra.CrossCutting.Identity.Models;
+using Eventos.IO.Infra.CrossCutting.Identity.Services;
 using Eventos.IO.Infra.Data.Context;
 using Eventos.IO.Infra.Data.Repository;
 using Eventos.IO.Infra.Data.UoW;
@@ -40,8 +38,8 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
             services.AddScoped<IHandler<RegistrarEventoCommand>, EventoCommandHandlers>();
             services.AddScoped<IHandler<AtualizarEventoCommand>, EventoCommandHandlers>();
             services.AddScoped<IHandler<ExcluirEventoCommand>, EventoCommandHandlers>();
-            //services.AddScoped<IHandler<AtualizarEnderecoEventoCommand>, EventoCommandHandlers>();
-            //services.AddScoped<IHandler<IncluirEnderecoEventoCommand>, EventoCommandHandlers>();
+            services.AddScoped<IHandler<AtualizarEnderecoEventoCommand>, EventoCommandHandlers>();
+            services.AddScoped<IHandler<IncluirEnderecoEventoCommand>, EventoCommandHandlers>();
             services.AddScoped<IHandler<RegistrarOrganizadorCommand>, OrganizadorCommandHandler>();
 
             // Domain - Eventos
@@ -49,6 +47,8 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
             services.AddScoped<IHandler<EventoRegistradoEvent>, EventoEventHandler>();
             services.AddScoped<IHandler<EventoAtualizadoEvent>, EventoEventHandler>();
             services.AddScoped<IHandler<EventoExcluidoEvent>, EventoEventHandler>();
+            services.AddScoped<IHandler<EnderecoEventoAtualizadoEvent>, EventoEventHandler>();
+            services.AddScoped<IHandler<EnderecoEventoAdicionadoEvent>, EventoEventHandler>();
             services.AddScoped<IHandler<OrganizadorRegistradoEvent>, OrganizadorEventHandler>();
 
             // Infra - Data
@@ -61,10 +61,10 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
             services.AddScoped<IBus, InMemoryBus>();
 
             // Infra - Identity
-            //services.AddTransient<IEmailSender, AuthMessageSender>();
-            //services.AddTransient<ISmsSender, AuthMessageSender>();
-            //services.AddScoped<IUser, AspNetUser>();
-
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<IUser, AspNetUser>();
+            
             // ASPNET
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

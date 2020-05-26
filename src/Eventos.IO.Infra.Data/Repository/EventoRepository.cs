@@ -64,8 +64,7 @@ namespace Eventos.IO.Infra.Data.Repository
 
             //return Db.Eventos.Include(e => e.Endereco).FirstOrDefault(e => e.Id == id);
         }
-
-
+        
         public IEnumerable<Evento> ObterEventoPorOrganizador(Guid organizadorId)
         {
             var sql = @"SELECT * FROM EVENTOS E " +
@@ -90,6 +89,13 @@ namespace Eventos.IO.Infra.Data.Repository
                     "ORDER BY E.DATAFIM DESC ";
 
             return Db.Database.GetDbConnection().Query<Evento>(sql);
+        }
+
+        public override void Remover(Guid id)
+        {
+            var evento = ObterPorId(id);
+            evento.ExcluirEvento();
+            Atualizar(evento);
         }
 
 

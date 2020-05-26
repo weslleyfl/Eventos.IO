@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventos.IO.Application", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventos.IO.Infra.CrossCutting.IoC", "src\Eventos.IO.Infra.CrossCutting.IoC\Eventos.IO.Infra.CrossCutting.IoC\Eventos.IO.Infra.CrossCutting.IoC.csproj", "{02B4DED4-9396-42C5-8562-63A5735944D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventos.IO.Infra.CrossCutting.Bus", "src\Eventos.IO.Infra.CrossCutting.Bus\Eventos.IO.Infra.CrossCutting.Bus.csproj", "{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventos.IO.Infra.CrossCutting.Bus", "src\Eventos.IO.Infra.CrossCutting.Bus\Eventos.IO.Infra.CrossCutting.Bus.csproj", "{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventos.IO.Infra.CrossCutting.Identity", "src\Eventos.IO.Infra.CrossCutting.Identity\Eventos.IO.Infra.CrossCutting.Identity.csproj", "{102B2228-CB46-49CB-94C5-8A0CCB997B52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102B2228-CB46-49CB-94C5-8A0CCB997B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102B2228-CB46-49CB-94C5-8A0CCB997B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102B2228-CB46-49CB-94C5-8A0CCB997B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102B2228-CB46-49CB-94C5-8A0CCB997B52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +92,7 @@ Global
 		{7593FAF9-82A4-49DD-951C-73D243DB43D0} = {24141576-A446-4D5D-B549-F8064F4DDE87}
 		{02B4DED4-9396-42C5-8562-63A5735944D1} = {85C0FE02-3218-4C22-9DAB-88C73CC982BC}
 		{5F2944E8-42E9-4218-A9FD-D4A17D7D1FCA} = {85C0FE02-3218-4C22-9DAB-88C73CC982BC}
+		{102B2228-CB46-49CB-94C5-8A0CCB997B52} = {85C0FE02-3218-4C22-9DAB-88C73CC982BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {610B3066-B325-4EC8-AC94-2DFE64E0D24C}

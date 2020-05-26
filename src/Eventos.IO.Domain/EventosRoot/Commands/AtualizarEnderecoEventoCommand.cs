@@ -1,7 +1,7 @@
 ﻿using System;
 using Eventos.IO.Domain.Core.Commands;
 
-namespace Eventos.IO.Domain.Eventos.Commands
+namespace Eventos.IO.Domain.EventosRoot.Commands
 {
     public class AtualizarEnderecoEventoCommand : Command
     {

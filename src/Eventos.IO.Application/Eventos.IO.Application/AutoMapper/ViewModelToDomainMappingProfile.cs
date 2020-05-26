@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using Eventos.IO.Application.ViewModels;
-using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.EventosRoot.Commands;
 using Eventos.IO.Domain.OrganizadoresRoot.Commands;
 // using Eventos.IO.Domain.OrganizadoresRoot.Commands;

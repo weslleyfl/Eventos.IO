@@ -80,7 +80,7 @@ namespace Eventos.IO.Domain.EventosRoot
 
         public void ExcluirEvento()
         {
-            // TODO: Deve validar alguma regra?
+            // TODO: Deve validar alguma regra? Regra que pertence ao estado do evento
             // Se alguem ja se inscreveu no evento, nao posso excluir
             Excluido = true;
         }

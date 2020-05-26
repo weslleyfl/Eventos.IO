@@ -7,7 +7,7 @@ function validacoesEvento() {
 
     $.validator.methods.range = function (value, element, param) {
         var globalizedValue = value.replace(",", ".");
-        return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        return this.optional(element) || globalizedValue >= param[0] && globalizedValue <= param[1];
     };
 
     $.validator.methods.number = function (value, element) {
@@ -18,9 +18,9 @@ function validacoesEvento() {
         "closeButton": false,
         "debug": false,
         "newestOnTop": false,
-        "progressBar": false,
+        "progressBar": true,
         "positionClass": "toast-top-right",
-        "preventDuplicates": false,
+        "preventDuplicates": true,
         "onclick": null,
         "showDuration": "300",
         "hideDuration": "1000",
@@ -32,26 +32,25 @@ function validacoesEvento() {
         "hideMethod": "fadeOut"
     };
 
-    //$('#DataInicio').datepicker({
-    //    format: "dd/mm/yyyy",
-    //    startDate: "tomorrow",
-    //    language: "pt-BR",
-    //    orientation: "bottom right",
-    //    autoclose: true
-    //});
+    // Define a callback for when the toast is shown/hidden/clicked
+    //toastr.options.onShown = function () { console.log('hello'); };
+    toastr.options.onHidden = function () {
+        console.log('goodbye');
+        window.location = 'https://localhost:44338/Eventos/MeusEventos';
+    };
+    toastr.options.onclick = function () {
+        console.log('clicked');
+        window.location = 'https://localhost:44338/Eventos/MeusEventos';
+    };
+    toastr.options.onCloseClick = function () {
+        console.log('close button clicked');
+        window.location = 'https://localhost:44338/Eventos/MeusEventos';
+    };
 
-    //$('#DataFim').datepicker({
-    //    format: "dd/mm/yyyy",
-    //    startDate: "tomorrow",
-    //    language: "pt-BR",
-    //    orientation: "bottom right",
-    //    autoclose: true
-    //});
 }
 
-
-
 $(document).ready(function () {
+
     DateTimePicker();
     $("#txtDataInicio").change(function () {
         var date2 = $("#txtDataInicio").datepicker('getDate', '+1d');
@@ -60,6 +59,41 @@ $(document).ready(function () {
         $("#txtDataFim").datepicker('option', 'minDate', date2);
         $("#txtDataFim").datepicker('setDate', date2);
     });
+
+    // Validacoes de exibicao do endereco
+
+    var $input = $('#Online');
+    var $inputGratuito = $("#Gratuito");
+
+    MostrarEndereco();
+    MostrarValor();
+
+    $input.click(function () {
+        MostrarEndereco();
+    });
+
+    $inputGratuito.click(function () {
+        MostrarValor();
+    });
+
+    function MostrarEndereco() {
+        if ($input.is(':checked')) {
+            $('#EnderecoForm').hide();
+        } else {
+            $('#EnderecoForm').show();
+        }
+    }
+
+    function MostrarValor() {
+        if ($inputGratuito.is(':checked')) {
+            // $('#Valor').val(0);
+            $("#Valor").prop("disabled", true);
+        } else {
+            // $('#Valor').val('');
+            $('#Valor').prop('disabled', false);
+        }
+    }
+
 
 });
 
@@ -92,3 +126,56 @@ function DateTimePicker() {
     });
 }
 
+function AjaxModal() {
+
+    $(document).ready(function () {
+
+        $(function () {
+
+            $.ajaxSetup({ cache: false });
+
+            $("a[data-modal]").on("click",
+                function (e) {
+
+                    console.log('Url da Controller ', this.href);
+
+                    $('#myModalContent').load(this.href,
+                        function () {
+
+                            $('#myModal').modal({
+                                keyboard: true
+                            }, 'show');
+
+                            bindForm(this);
+                        });
+                    return false;
+                });
+        });
+
+        function bindForm(dialog) {
+
+            $('form', dialog).submit(function () {
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        if (result.success) {
+
+                            console.log('Result Url: ', result.url);
+
+                            $('#myModal').modal('hide');
+                            $('#EnderecoTarget').load(result.url); // Carrega o resultado HTML para a div demarcada
+                        } else {
+                            $('#myModalContent').html(result);
+                            bindForm(dialog);
+                        }
+                    }
+                });
+                return false;
+            });
+        }
+
+
+    });
+}

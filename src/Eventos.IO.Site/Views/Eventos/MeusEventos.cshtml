@@ -1,11 +1,21 @@
 ﻿@model IEnumerable<Eventos.IO.Application.ViewModels.EventoViewModel>
 
 @{
-    ViewData["Title"] = "Lista dos Próximos Eventos";
+    ViewData["Title"] = "Meus Eventos";
 }
 
 <h2>@ViewData["Title"]</h2>
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-left">
+            <a asp-action="Create" class="btn btn-primary">
+                @*<span class="glyphicon glyphicon-plus-sign"></span>Novo Evento*@
+                <i class="fa fa-search"></i> Novo Evento
+            </a>
+        </div>
+    </div>
+</div>
 <br />
 <table class="table">
     <thead>
@@ -59,12 +69,21 @@
                 </td>
 
                 <td>
-                              
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                        @*<span class="glyphicon glyphicon-pencil"></span> Edit*@
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                    </a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">
                         @*<span class="glyphicon glyphicon-search"></span> Ver Detalhes*@
                         <i class="fa fa-search"></i>  Ver Detalhes
                     </a>
-                    
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                        @*<span class="glyphicon glyphicon-trash"></span> Delete*@
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
                 </td>
             </tr>
         }

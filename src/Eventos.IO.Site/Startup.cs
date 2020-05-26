@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Eventos.IO.Site.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Eventos.IO.Application.Interfaces;
@@ -20,6 +19,7 @@ using Eventos.IO.Infra.CrossCutting.IoC;
 using Eventos.IO.Site.Extensions;
 using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Site.Models;
+using Eventos.IO.Infra.CrossCutting.Identity.Data;
 //using AutoMapper;
 //using Eventos.IO.Application.AutoMapper;
 
@@ -84,7 +84,7 @@ namespace Eventos.IO.Site
             services.AddAutoMapperSetup();
 
             // TODO: Remover pos testes, mover para a camada de IoC
-            services.AddScoped<IUser, AspNetUser>();
+            //services.AddScoped<IUser, AspNetUser>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
