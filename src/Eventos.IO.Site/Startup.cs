@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ElmahCore.Mvc;
+using Eventos.IO.Application.Interfaces;
+using Eventos.IO.Application.Services;
+using Eventos.IO.Domain.Interfaces;
+using Eventos.IO.Infra.CrossCutting.AspNetFilters;
+using Eventos.IO.Infra.CrossCutting.Bus;
+using Eventos.IO.Infra.CrossCutting.Identity.Data;
+using Eventos.IO.Infra.CrossCutting.IoC;
+using Eventos.IO.Site.Extensions;
+using Eventos.IO.Site.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Eventos.IO.Application.Interfaces;
-using Eventos.IO.Application.Services;
-using Eventos.IO.Infra.CrossCutting.Bus;
-using Eventos.IO.Infra.CrossCutting.IoC;
-using Eventos.IO.Site.Extensions;
-using Eventos.IO.Domain.Interfaces;
-using Eventos.IO.Site.Models;
-using Eventos.IO.Infra.CrossCutting.Identity.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 //using AutoMapper;
 //using Eventos.IO.Application.AutoMapper;
 
@@ -53,25 +55,44 @@ namespace Eventos.IO.Site
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.Configure<IdentityOptions>(options =>
+            services.AddAuthorization(options =>
             {
-                // Default Password settings.
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 4;
-                options.Password.RequiredUniqueChars = 1;
+                options.AddPolicy("PodeLerEventos", policy => policy.RequireClaim("Eventos", "Ler"));
+                options.AddPolicy("PodeGravar", policy => policy.RequireClaim("Eventos", "Gravar"));
 
-                // Default SignIn settings.
-                options.SignIn.RequireConfirmedEmail = false;
-                options.SignIn.RequireConfirmedPhoneNumber = false;
+            });
 
-                // Default Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 3;
-                options.Lockout.AllowedForNewUsers = true;
 
+            services.Configure<IdentityOptions>(options =>
+                {
+                    // Default Password settings.
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequiredUniqueChars = 1;
+
+                    // Default SignIn settings.
+                    options.SignIn.RequireConfirmedEmail = false;
+                    options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                    // Default Lockout settings.
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 3;
+                    options.Lockout.AllowedForNewUsers = true;
+
+                });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(600);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
             });
 
 
@@ -86,11 +107,28 @@ namespace Eventos.IO.Site
             // TODO: Remover pos testes, mover para a camada de IoC
             //services.AddScoped<IUser, AspNetUser>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // Elmah Core capturar as exceções
+            // services.AddElmah();
+            services.AddElmah(options =>
+            {
+                options.Path = @"erros";
+                options.CheckPermissionAction = context => context.User.Identity.IsAuthenticated;
+            });
 
-            
+            services.AddMvc(options =>
+            {
+                //options.Filters.Add(typeof(GlobalExceptionHandlingFilter)); // By type
+                options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalExceptionHandlingFilter))); // devido construtor
+                // TODO: Implementar o serilog aqui
+                // options.Filters.Add(typeof(GlobalActionLogger));
+                //options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalActionLogger)));
+
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+
             // Injeçao de dependencia 
             RegisterServices(services);
+
 
 
         }
@@ -105,16 +143,24 @@ namespace Eventos.IO.Site
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                // app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/erro-de-aplicacao");
+                app.UseStatusCodePagesWithReExecute("/erro-de-aplicacao/{0}");
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            // Elmah Core capturar as exceções
+            // Default elmah path ~/elmah. services.AddElmah(options => options.Path = "you_path_here")
+            app.UseElmah();
 
             app.UseMvc(routes =>
             {

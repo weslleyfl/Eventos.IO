@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Eventos.IO.Application.Interfaces;
+﻿using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +7,12 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace Eventos.IO.Site.Areas.Identity.Pages.Account
 {
@@ -82,9 +83,17 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                   var claimAdicionado = await AdicionarClaimsIniciais(user);
+
+                    if (!claimAdicionado)
+                    {
+                        return Page();
+                    }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var organizador = new OrganizadorViewModel
@@ -124,6 +133,45 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<bool> AdicionarClaimsIniciais(IdentityUser user)
+        {
+
+            // Permissoes que todos os usuarios devem ter ao ser criados
+            //user.Claims.Add(new IdentityUserClaim<string> { ClaimType = "Eventos", ClaimValue = "Ler" });
+            //user.Claims.Add(new IdentityUserClaim<string> { ClaimType = "Eventos", ClaimValue = "Gravar" });
+
+            var eventosLerClaim = await _userManager.AddClaimAsync(user, new Claim(type: "Eventos", value: "Ler"));
+
+            if (!eventosLerClaim.Succeeded)
+            {
+                foreach (var error in eventosLerClaim.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                //throw new InvalidOperationException($"Unexpected error occurred setting claim" +
+                //    $" ({eventosLerClaim.ToString()}) for user with ID '{user.Id}'.");
+
+                return false;
+            }
+
+            var eventosGravarClaim = await _userManager.AddClaimAsync(user, new Claim(type: "Eventos", value: "Gravar"));
+
+            if (!eventosGravarClaim.Succeeded)
+            {
+                foreach (var error in eventosGravarClaim.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return false;
+            }
+
+            //await _signInManager.RefreshSignInAsync(user);
+
+            return true;
         }
     }
 }
