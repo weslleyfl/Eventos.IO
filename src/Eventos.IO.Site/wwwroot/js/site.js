@@ -36,15 +36,15 @@ function validacoesEvento() {
     //toastr.options.onShown = function () { console.log('hello'); };
     toastr.options.onHidden = function () {
         console.log('goodbye');
-        window.location = 'https://localhost:44338/meus-eventos';
+        window.location = '/meus-eventos';
     };
     toastr.options.onclick = function () {
         console.log('clicked');
-        window.location = 'https://localhost:44338/meus-eventos';
+        window.location = '/meus-eventos';
     };
     toastr.options.onCloseClick = function () {
         console.log('close button clicked');
-        window.location = 'https://localhost:44338/meus-eventos';
+        window.location = '/meus-eventos';
     };
 
 }

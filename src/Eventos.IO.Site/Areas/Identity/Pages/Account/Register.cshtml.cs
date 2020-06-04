@@ -1,6 +1,7 @@
 ﻿using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Domain.Core.Notifications;
+using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -19,16 +20,16 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IOrganizadorAppService _organizadorAppService;
         private readonly IDomainNotificationHandler<DomainNotification> _notifications;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             IOrganizadorAppService organizadorAppService,
@@ -47,30 +48,6 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
-            [Required(ErrorMessage = "O nome é requerido")]
-            public string Nome { get; set; }
-
-            [Required(ErrorMessage = "O CPF é requerido")]
-            [StringLength(11)]
-            public string CPF { get; set; }
-
-            [Required(ErrorMessage = "O e-mail é requerido")]
-            [EmailAddress(ErrorMessage = "E-mail em formato inválido")]
-            public string Email { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Senha")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirme a senha")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-        }
 
         public void OnGet(string returnUrl = null)
         {
@@ -82,12 +59,12 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                   var claimAdicionado = await AdicionarClaimsIniciais(user);
+                    var claimAdicionado = await AdicionarClaimsIniciais(user);
 
                     if (!claimAdicionado)
                     {
@@ -109,6 +86,8 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
                     if (_notifications.HasNotifications())
                     {
                         await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, $"Erro: Usuário {Input.Nome} Id {user.Id} não registrado.");
+
                         return Page();
                     }
 
@@ -135,7 +114,7 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private async Task<bool> AdicionarClaimsIniciais(IdentityUser user)
+        private async Task<bool> AdicionarClaimsIniciais(ApplicationUser user)
         {
 
             // Permissoes que todos os usuarios devem ter ao ser criados

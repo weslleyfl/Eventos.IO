@@ -5,6 +5,7 @@ using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.AspNetFilters;
 using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
+using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.IoC;
 using Eventos.IO.Site.Extensions;
 using Eventos.IO.Site.Models;
@@ -51,7 +52,7 @@ namespace Eventos.IO.Site
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -128,9 +129,7 @@ namespace Eventos.IO.Site
 
             // Injeçao de dependencia 
             RegisterServices(services);
-
-
-
+                       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
