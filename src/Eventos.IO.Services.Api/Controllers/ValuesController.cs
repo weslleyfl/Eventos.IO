@@ -64,7 +64,8 @@ namespace Eventos.IO.Services.Api.Controllers
         [HttpGet()]       
         [Route("valor/{id}")]        
         [Authorize(Policy = "PodeGravar")]
-        //[MapToApiVersion("2.0")] // v2.0 specific action for GET api/values endpoint
+        [MapToApiVersion("2")] // v2.0 specific action for GET api/values endpoint
+        [ApiExplorerSettings(GroupName = "v2")]
         public ActionResult<string> GetById(int id)
         {
             // ApiVersion.Default.MajorVersion

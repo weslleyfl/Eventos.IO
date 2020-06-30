@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 //using AutoMapper;
 //using Eventos.IO.Application.AutoMapper;
 
@@ -121,7 +122,7 @@ namespace Eventos.IO.Site
                 //options.Filters.Add(typeof(GlobalExceptionHandlingFilter)); // By type
                 options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalExceptionHandlingFilter))); // devido construtor
                 // TODO: Implementar o serilog aqui
-                // options.Filters.Add(typeof(GlobalActionLogger));
+                options.Filters.Add(typeof(GlobalActionLogger));
                 //options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalActionLogger)));
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -156,6 +157,9 @@ namespace Eventos.IO.Site
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            // Serilog HTTP Requistes informations
+            app.UseSerilogRequestLogging();
 
             // Elmah Core capturar as exceções
             // Default elmah path ~/elmah. services.AddElmah(options => options.Path = "you_path_here")

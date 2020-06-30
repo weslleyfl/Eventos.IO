@@ -29,7 +29,11 @@ namespace Eventos.IO.Infra.Data.Repository
 
         public IEnumerable<Categoria> ObterCategorias()
         {
-            throw new NotImplementedException();
+            var sql = "SELECT * FROM Categorias";
+
+            IEnumerable<Categoria> categorias = Db.Database.GetDbConnection().Query<Categoria>(sql);
+
+            return categorias;
         }
 
         public Endereco ObterEnderecoPorId(Guid id)

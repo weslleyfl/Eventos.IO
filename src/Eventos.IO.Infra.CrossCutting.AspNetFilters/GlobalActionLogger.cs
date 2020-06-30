@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
 {
     public class GlobalActionLogger : IActionFilter
@@ -45,6 +46,7 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
 
                 _logger.LogInformation(1, data.ToString(), "Log de Auditoria");
                 // _httpContextAccessor.HttpContext.RiseError(new ArgumentException(data.ToString(), context.Exception));
+                
             }
 
             if (_hostingEnviroment.IsProduction())
@@ -64,20 +66,17 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
                     //Form = Form(context.HttpContext),
                     //ServerVariables = context.HttpContext.Request?.Headers?.Keys.Select(k => new Item(k, context.HttpContext.Request.Headers[k])).ToList(),
                     //QueryString = context.HttpContext.Request?.Query?.Keys.Select(k => new Item(k, context.HttpContext.Request.Query[k])).ToList(),
-                    Data = context.Exception, //?.ToDataList(),
-                    Detail = JsonConvert.SerializeObject(new { DadoExtra = "Dados a mais", DadoInfo = "Pode ser um Json" })
+                    Exceptions = context.Exception, //?.ToDataList(),
+                    //Detail = JsonConvert.SerializeObject(new { DadoExtra = "Dados a mais", DadoInfo = "Pode ser um Json" })
                 };
 
                 // Serilog
                 //_httpContextAccessor.HttpContext.RiseError(new ArgumentException(message.ToString()));
-                //_logger.LogError("Log de Auditoria {message} ", message.ToString());
+                _logger.LogInformation("Log de Auditoria {message} ", message.ToString());
                 //_logger.LogWarning("The person {PersonId} could not be found.", message.User);
+                //_logger.LogInformation("Log de Auditoria - Data Acesso {data} - Usuario {user} - Local {host}",
+                //                       message.DateTime, message.User, message.Hostname);
 
-                using (_logger.BeginScope(new Dictionary<string, object> { { "PersonName", _httpContextAccessor.HttpContext.User.Identity.Name } }))
-                {
-                    _logger.LogInformation("Hello {user} ", message.User);
-                    _logger.LogInformation("World");
-                }
 
                 //var client = ElmahioAPI.Create("8f46c7cd9bfe4a618abf7a5ea652d0d9");
                 //client.Messages.Create(new Guid("19ad15fd-5158-4b7a-b36d-ab56dfe4500a").ToString(), message);

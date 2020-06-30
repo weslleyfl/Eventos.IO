@@ -2,6 +2,7 @@
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Domain.OrganizadoresRoot.Commands;
+using Eventos.IO.Domain.OrganizadoresRoot.Repository;
 using Eventos.IO.Infra.CrossCutting.Identity.Authorization;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,7 @@ namespace Eventos.IO.Services.Api.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger _logger;
         private readonly IBus _bus;
+        private readonly IOrganizadorRepository _organizadorRepository;
 
         // tokenConfigurations
         private readonly JwtTokenOptions _jwtTokenOptions;
@@ -44,12 +46,14 @@ namespace Eventos.IO.Services.Api.Controllers
                     IOptions<JwtTokenOptions> jwtTokenOptions,
                     IBus bus,
                     IDomainNotificationHandler<DomainNotification> notifications,
+                    IOrganizadorRepository organizadorRepository,
                     IUser user) : base(notifications, user, bus)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _bus = bus;
             _jwtTokenOptions = jwtTokenOptions.Value;
+            _organizadorRepository = organizadorRepository;
 
             ThrowIfInvalidOptions(_jwtTokenOptions);
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -76,47 +80,46 @@ namespace Eventos.IO.Services.Api.Controllers
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                var claimAdicionado = await AdicionarClaimsIniciais(user);
-
-                if (!claimAdicionado)
-                {
-                    _logger.LogInformation("Claims nao adicioandas ao registrar o usuário.");
-
-                    NotificarErroModelInvalida();
-                    return Response(model);
-                }
-
-                _logger.LogInformation("O usuário criou uma nova conta com senha.");
-
-                var registroCommand = new RegistrarOrganizadorCommand(Guid.Parse(user.Id), model.Nome, model.CPF, user.Email);
-                _bus.SendCommand(registroCommand);
-
-                if (!OperacaoValida())
-                {
-                    await _userManager.DeleteAsync(user);
-                    return Response(model);
-                }
-
-                // ja logo o usuario
-                // await _signInManager.SignInAsync(user, isPersistent: false);
-
-                _logger.LogInformation(1, "Usuario criado com sucesso!");
-
-                var response = await GerarTokenUsuario(new LoginViewModel { Email = model.Email, Password = model.Password });
-
-                return Response(response);
+                AdicionarErrosIdentity(result);
+                return Response(model);
             }
 
-            AdicionarErrosIdentity(result);
+            _logger.LogInformation("O usuário criou uma nova conta com senha.");
 
-            return Response(model);
+            var claimAdicionado = await AdicionarClaimsIniciais(user);
+
+            if (!claimAdicionado)
+            {
+                _logger.LogInformation("Claims não adicioandas ao registrar o usuário.");
+
+                NotificarErroModelInvalida();
+                return Response(model);
+            }
+
+            var registroCommand = new RegistrarOrganizadorCommand(Guid.Parse(user.Id), model.Nome, model.CPF, user.Email);
+            _bus.SendCommand(registroCommand);
+
+            if (!OperacaoValida())
+            {
+                await _userManager.DeleteAsync(user);
+                return Response(model);
+            }
+
+            // ja logo o usuario
+            // await _signInManager.SignInAsync(user, isPersistent: false);
+
+            _logger.LogInformation(1, "Usuario criado com sucesso!");
+
+            var response = await GerarTokenUsuario(new LoginViewModel { Email = model.Email, Password = model.Password });
+
+            return Response(response);
 
         }
 
         [HttpPost]
-        [AllowAnonymous]      
+        [AllowAnonymous]
         [Route("conta")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
@@ -210,13 +213,21 @@ namespace Eventos.IO.Services.Api.Controllers
                   signingCredentials: _jwtTokenOptions.SigningCredentials);
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var orgUser = _organizadorRepository.ObterPorId(Guid.Parse(user.Id));
 
             var response = new
             {
                 access_token = encodedJwt,
                 expires_in = (int)_jwtTokenOptions.ValidFor.TotalSeconds,
-                user = user
+                user = new
+                {
+                    id = user.Id,
+                    nome = orgUser.Nome,
+                    email = orgUser.Email,
+                    claims = userClaims.Select(c => new { c.Type, c.Value })
+                }
             };
+
 
             return response;
         }

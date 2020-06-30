@@ -1,0 +1,5 @@
+docker run -d --restart unless-stopped --name seq --hostname 9932c -e ACCEPT_EULA=Y -v c:\temp\data:/data -p 5341:80 datalust/seq:latest
+
+-- https://docs.datalust.co/docs/getting-started-with-docker
+
+-- https://blog.datalust.co/docker-developer-preview-1/

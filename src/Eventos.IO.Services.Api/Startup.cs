@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +58,15 @@ namespace Eventos.IO.Services.Api
             // Configurando o uso da classe de contexto para
             // acesso às tabelas do ASP.NET Identity Core
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                   sqlServerOptionsAction: (sqlOptions) =>
+                   {
+                       sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                   }
+               ));
 
             //services.AddDefaultIdentity<ApplicationUser>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -94,7 +104,7 @@ namespace Eventos.IO.Services.Api
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(300);
                 options.SlidingExpiration = true;
 
                 //options.AccessDeniedPath =
@@ -113,6 +123,16 @@ namespace Eventos.IO.Services.Api
             // Credentials
             var _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
 
+            // compressão de dados gzip
+            //services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            //services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
+
+            // Configura o modo de compressão Brotli
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.EnableForHttps = true;
+            });
 
             services.AddOptions();
             services.AddMvc(options =>
@@ -124,7 +144,12 @@ namespace Eventos.IO.Services.Api
 
                 options.Filters.Add(new AuthorizeFilter(policy));
 
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+              .AddJsonOptions((options) =>
+              {
+                  // Remove null fields from API JSON response
+                  options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+              });
 
             services.AddAuthorization(options =>
             {
@@ -220,34 +245,8 @@ namespace Eventos.IO.Services.Api
                 options.SubstituteApiVersionInUrl = true;
             });
 
-            //services.AddMvc(options =>
-            //{
-            //    // options.EnableEndpointRouting = false;
 
-            //    //Formatar dados de resposta na API aqui impeço de receber xml, só vou receber json
-            //    options.OutputFormatters.Remove(new XmlDataContractSerializerOutputFormatter());
-            //    // Prefixes are added to each controller (prefixes are added before no specific routing)
-            //    options.UseCentralRoutePrefix(new RouteAttribute("api/v{version}"));
-            //    //options.UseCentralRoutePrefix(new RouteAttribute("api/[controller]/v{version}"));
-            //    //options.UseCentralRoutePrefix(new RouteAttribute("lg/v1/[action]"));
-            //    //opt.UseCentralRoutePrefix(new RouteAttribute("api/[controller]/[action]"));
-
-            //})         
-            //.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddSwaggerGen(s =>
-            {
-                s.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "Eventos.IO API",
-                    Description = "API do site Eventos.IO",
-                    TermsOfService = new Uri("http://eventos.io/terms"),
-                    Contact = new OpenApiContact { Name = "Desenvolvedor X", Email = "email@eventos.io", Url = new Uri("http://eventos.io") },
-                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("http://eventos.io/licensa") }
-                });
-
-            });
+            services.AddSwaggerConfig();
 
             // Registrar todos os DI
             RegisterServices(services);
@@ -257,7 +256,7 @@ namespace Eventos.IO.Services.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IHttpContextAccessor accessor)
         {
-       
+
             // global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
@@ -269,19 +268,26 @@ namespace Eventos.IO.Services.Api
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+                   
 
-            //app.UseMvc();   
-            app.UseMvc()
-              .UseApiVersioning();
-
-            app.UseSwaggerAuthorized();
+            // app.UseSwaggerAuthorized();
             //app.UseSwaggerAuthorizedInterceptor();
+            // https://discoverdot.net/projects/swashbuckle-aspnetcore --> exemplo
             app.UseSwagger();
             app.UseSwaggerUI(s =>
             {
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "Eventos.IO API v1.0");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Eventos.IO API V2 Docs");
 
             });
+
+          
+            // Ativa a compressão
+            app.UseResponseCompression();
+
+            //app.UseMvc();   
+            app.UseMvc()
+              .UseApiVersioning();
 
 
             // criando uma copia do container
