@@ -68,7 +68,7 @@ namespace Eventos.IO.Infra.Data.Repository
 
             //return Db.Eventos.Include(e => e.Endereco).FirstOrDefault(e => e.Id == id);
         }
-        
+
         public IEnumerable<Evento> ObterEventoPorOrganizador(Guid organizadorId)
         {
             var sql = @"SELECT * FROM EVENTOS E " +
@@ -83,7 +83,23 @@ namespace Eventos.IO.Infra.Data.Repository
 
         public Evento ObterMeuEventoPorId(Guid id, Guid organizadorId)
         {
-            throw new NotImplementedException();
+            var sql = @"SELECT * FROM EVENTOS E " +
+                      "LEFT JOIN Enderecos EN " +
+                      "ON E.Id = EN.EventoId " +
+                      "WHERE E.EXCLUIDO = 0 " +
+                      "AND E.ORGANIZADORID = @oid " +
+                      "AND E.ID = @eid";
+
+            var evento = Db.Database.GetDbConnection().Query<Evento, Endereco, Evento>(sql,
+                    (e, en) =>
+                    {
+                        if (en != null)
+                            e.AtribuirEndereco(en);
+                        return e;
+                    }, 
+                    new { oid = organizadorId, eid = id });
+
+            return evento.FirstOrDefault();
         }
 
         public override IEnumerable<Evento> ObterTodos()

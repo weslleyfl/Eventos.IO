@@ -65,7 +65,7 @@ namespace Eventos.IO.Domain.EventosRoot
             if (Commit())
             {
                 //Notificar um processo concluido
-                Console.WriteLine("Evento registrado com sucesso");
+                // Console.WriteLine("Evento registrado com sucesso");
                 _bus.RaiseEvent(new EventoRegistradoEvent(evento.Id, evento.Nome, evento.DataInicio, evento.DataFim, evento.Gratuito,
                                                             evento.Valor, evento.Online, evento.NomeEmpresa));
             }
@@ -169,6 +169,10 @@ namespace Eventos.IO.Domain.EventosRoot
                 return;
             }
 
+            var evento = _eventoRepository.ObterPorId(message.EventoId.Value);
+            evento.TornarPresencial();
+
+            _eventoRepository.Atualizar(evento);
             _eventoRepository.AdicionarEndereco(endereco);
 
             if (Commit())

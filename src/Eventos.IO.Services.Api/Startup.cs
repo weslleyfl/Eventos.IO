@@ -151,6 +151,9 @@ namespace Eventos.IO.Services.Api
                   options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
               });
 
+            // cache em memoria
+            services.AddMemoryCache();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("PodeLerEventos", policy => policy.RequireClaim("Eventos", "Ler"));

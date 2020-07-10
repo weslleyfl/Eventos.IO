@@ -8,6 +8,7 @@ using Eventos.IO.Domain.EventosRoot.Repository;
 using Eventos.IO.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,17 +26,21 @@ namespace Eventos.IO.Services.Api.Controllers
         private readonly IBus _bus;
         private readonly IEventoRepository _eventoRepository;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
 
         public EventosController(IDomainNotificationHandler<DomainNotification> notifications,
                                  IUser user,
                                  IBus bus, IEventoAppService eventoAppService,
                                  IEventoRepository eventoRepository,
-                                 IMapper mapper) : base(notifications, user, bus)
+                                 IMapper mapper,
+                                 IMemoryCache cache
+                                 ) : base(notifications, user, bus)
         {
             _eventoAppService = eventoAppService;
             _eventoRepository = eventoRepository;
             _mapper = mapper;
             _bus = bus;
+            _cache = cache;
         }
 
         [HttpGet]
@@ -59,7 +64,19 @@ namespace Eventos.IO.Services.Api.Controllers
         [Route("eventos/categorias")]
         public IEnumerable<CategoriaViewModel> ObterCategorias()
         {
-            return _mapper.Map<IEnumerable<CategoriaViewModel>>(_eventoRepository.ObterCategorias());
+            string cacheKey = "GreetingCategorias-Invoke";
+
+            var cacheEntry = _cache.GetOrCreate(cacheKey, (entry) => {
+                // configuração
+                entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                entry.SetSize(1024);
+
+                // retorno do objeto
+                return _mapper.Map<IEnumerable<CategoriaViewModel>>(_eventoRepository.ObterCategorias());
+            });
+
+            return cacheEntry;
         }
 
         [HttpGet]
@@ -68,6 +85,15 @@ namespace Eventos.IO.Services.Api.Controllers
         public IEnumerable<EventoViewModel> ObterMeusEventos()
         {
             return _mapper.Map<IEnumerable<EventoViewModel>>(_eventoRepository.ObterEventoPorOrganizador(base.OrganizadorId));
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "PodeLerEventos")]
+        [Route("eventos/meus-eventos/{id:guid}")]
+        public IActionResult ObterMeuEventoPorId(Guid id)
+        {
+            var evento = _mapper.Map<EventoViewModel>(_eventoRepository.ObterMeuEventoPorId(id, base.OrganizadorId));
+            return (evento == null) ? StatusCode(404) : Response(evento);
         }
 
         [HttpPost]
