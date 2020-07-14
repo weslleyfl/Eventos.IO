@@ -31,13 +31,7 @@ namespace Eventos.IO.Application.Services
         }
 
 
-        public void Registrar(EventoViewModel eventoViewModel)
-        {
-            var registroCommand = _mapper.Map<RegistrarEventoCommand>(eventoViewModel);
-            //var registroCommand = _mapper.Map<EventoViewModel, RegistrarEventoCommand>(eventoViewModel);
-            _bus.SendCommand(registroCommand);
-        }
-
+     
         public IEnumerable<EventoViewModel> ObterEventoPorOrganizador(Guid organizadorId)
         {
             return _mapper.Map<IEnumerable<EventoViewModel>>(_eventoRepository.ObterEventoPorOrganizador(organizadorId));
@@ -52,6 +46,17 @@ namespace Eventos.IO.Application.Services
         public IEnumerable<EventoViewModel> ObterTodos()
         {
             return _mapper.Map<IEnumerable<EventoViewModel>>(_eventoRepository.ObterTodos());
+        }
+              
+        public IEnumerable<EventoViewModel> ObterMeusEventos(Guid organizadorId)
+        {
+            return _mapper.Map<IEnumerable<EventoViewModel>>(_eventoRepository.ObterEventoPorOrganizador(organizadorId));
+        }
+    
+        public EventoViewModel ObterMeuEventoPorId(Guid id, Guid organizadorId)
+        {
+            var evento = _mapper.Map<EventoViewModel>(_eventoRepository.ObterMeuEventoPorId(id, organizadorId));
+            return evento;
         }
 
         public void Atualizar(EventoViewModel eventoViewModel)
@@ -85,6 +90,13 @@ namespace Eventos.IO.Application.Services
             return _mapper.Map<EnderecoViewModel>(_eventoRepository.ObterEnderecoPorId(id));
         }
 
+        public void Registrar(EventoViewModel eventoViewModel)
+        {
+            var registroCommand = _mapper.Map<RegistrarEventoCommand>(eventoViewModel);
+            //var registroCommand = _mapper.Map<EventoViewModel, RegistrarEventoCommand>(eventoViewModel);
+            _bus.SendCommand(registroCommand);
+        }
+        
         public void Dispose()
         {
             _eventoRepository.Dispose();

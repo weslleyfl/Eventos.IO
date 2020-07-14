@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Eventos.IO.Domain.Core.Events
 {
+    /// <summary>
+    /// Classe raiz - core
+    /// </summary>
     public abstract class Message
     {
         public string MessageType { get; protected set; }

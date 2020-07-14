@@ -8,6 +8,7 @@ using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using MediatR;
 
 namespace Eventos.IO.Services.Api.Controllers
 {
@@ -15,16 +16,16 @@ namespace Eventos.IO.Services.Api.Controllers
     [Produces("application/json")]
     public abstract class BaseController : ControllerBase
     {
-        private readonly IDomainNotificationHandler<DomainNotification> _notifications;
+        private readonly DomainNotificationHandler _notifications;
         private readonly IBus _bus;
 
         protected Guid OrganizadorId { get; set; }
 
-        protected BaseController(IDomainNotificationHandler<DomainNotification> notifications, 
+        protected BaseController(INotificationHandler<DomainNotification> notifications, 
                                  IUser user,
                                  IBus bus)
         {
-            _notifications = notifications;
+            _notifications = (DomainNotificationHandler)notifications;
             _bus = bus;
 
             if (user.IsAuthenticated())

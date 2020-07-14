@@ -5,6 +5,7 @@ using Eventos.IO.Domain.OrganizadoresRoot.Commands;
 using Eventos.IO.Domain.OrganizadoresRoot.Repository;
 using Eventos.IO.Infra.CrossCutting.Identity.Authorization;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +46,7 @@ namespace Eventos.IO.Services.Api.Controllers
                     ILoggerFactory loggerFactory,
                     IOptions<JwtTokenOptions> jwtTokenOptions,
                     IBus bus,
-                    IDomainNotificationHandler<DomainNotification> notifications,
+                    INotificationHandler<DomainNotification> notifications,
                     IOrganizadorRepository organizadorRepository,
                     IUser user) : base(notifications, user, bus)
         {
@@ -99,7 +100,7 @@ namespace Eventos.IO.Services.Api.Controllers
             }
 
             var registroCommand = new RegistrarOrganizadorCommand(Guid.Parse(user.Id), model.Nome, model.CPF, user.Email);
-            _bus.SendCommand(registroCommand);
+            await _bus.SendCommand(registroCommand);
 
             if (!OperacaoValida())
             {

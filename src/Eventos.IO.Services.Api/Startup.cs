@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Eventos.IO.Application.AutoMapper;
 using Eventos.IO.Domain.Interfaces;
-using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.CrossCutting.Identity.Authorization;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.IoC;
+using Eventos.IO.Infra.Data.Context;
 using Eventos.IO.Services.Api.AutoMapper;
 using Eventos.IO.Services.Api.Configurations;
 using Eventos.IO.Services.Api.Middlewares;
 using Eventos.IO.Services.Api.Security;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -67,6 +68,9 @@ namespace Eventos.IO.Services.Api
                         errorNumbersToAdd: null);
                    }
                ));
+
+
+            services.AddDbContext<EventStoreSQLContext>();
 
             //services.AddDefaultIdentity<ApplicationUser>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -153,6 +157,7 @@ namespace Eventos.IO.Services.Api
 
             // cache em memoria
             services.AddMemoryCache();
+
 
             services.AddAuthorization(options =>
             {
@@ -251,6 +256,8 @@ namespace Eventos.IO.Services.Api
 
             services.AddSwaggerConfig();
 
+            services.AddMediatR(typeof(Startup));
+
             // Registrar todos os DI
             RegisterServices(services);
 
@@ -271,7 +278,7 @@ namespace Eventos.IO.Services.Api
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-                   
+
 
             // app.UseSwaggerAuthorized();
             //app.UseSwaggerAuthorizedInterceptor();
@@ -284,7 +291,7 @@ namespace Eventos.IO.Services.Api
 
             });
 
-          
+
             // Ativa a compressão
             app.UseResponseCompression();
 
@@ -294,7 +301,7 @@ namespace Eventos.IO.Services.Api
 
 
             // criando uma copia do container
-            InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
+            //InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
 
         }
 

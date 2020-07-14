@@ -3,7 +3,6 @@ using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.Services;
 using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.AspNetFilters;
-using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.IoC;
@@ -24,6 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using MediatR;
+using Eventos.IO.Infra.Data.Context;
 //using AutoMapper;
 //using Eventos.IO.Application.AutoMapper;
 
@@ -52,6 +53,8 @@ namespace Eventos.IO.Site
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<EventStoreSQLContext>();
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
@@ -127,6 +130,8 @@ namespace Eventos.IO.Site
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // MediatR's
+            services.AddMediatR(typeof(Startup));
 
             // Injeçao de dependencia 
             RegisterServices(services);
@@ -172,7 +177,7 @@ namespace Eventos.IO.Site
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
+            // InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
         }
 
         private static void RegisterServices(IServiceCollection services)

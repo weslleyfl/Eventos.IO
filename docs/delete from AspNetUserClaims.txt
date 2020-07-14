@@ -1,0 +1,6 @@
+delete from AspNetUserClaims
+delete from AspNetUsers
+delete from Organizadors
+delete from Enderecos
+delete from Eventos
+delete from StoredEvent

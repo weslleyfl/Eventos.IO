@@ -6,6 +6,7 @@ using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.EventosRoot.Commands;
 using Eventos.IO.Domain.EventosRoot.Repository;
 using Eventos.IO.Domain.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -28,7 +29,7 @@ namespace Eventos.IO.Services.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
 
-        public EventosController(IDomainNotificationHandler<DomainNotification> notifications,
+        public EventosController(INotificationHandler<DomainNotification> notifications,
                                  IUser user,
                                  IBus bus, IEventoAppService eventoAppService,
                                  IEventoRepository eventoRepository,

@@ -2,6 +2,7 @@
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +33,7 @@ namespace Eventos.IO.Services.Api.Controllers
         private readonly IUser _user;
         private readonly IHttpContextAccessor _accessor;
 
-        public ValuesController(IDomainNotificationHandler<DomainNotification> notifications,
+        public ValuesController(INotificationHandler<DomainNotification> notifications,
                                 IUser user,
                                 IBus bus,
                                 IHttpContextAccessor accessor,

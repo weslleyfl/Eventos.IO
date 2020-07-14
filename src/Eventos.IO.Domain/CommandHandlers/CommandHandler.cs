@@ -5,6 +5,7 @@ using System.Text;
 using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Notifications;
+using MediatR;
 
 namespace Eventos.IO.Domain.CommandHandlers
 {
@@ -14,16 +15,16 @@ namespace Eventos.IO.Domain.CommandHandlers
     public abstract class CommandHandler
     {
         private readonly IUnitOfWork _uow;
-        private readonly IBus _bus;
-        private readonly IDomainNotificationHandler<DomainNotification> _notifications;
+        private readonly IBus _mediator;
+        private readonly DomainNotificationHandler _notifications;
 
-        protected CommandHandler(IUnitOfWork uow, 
-                                 IBus bus, 
-                                 IDomainNotificationHandler<DomainNotification> notifications)
+        protected CommandHandler(IUnitOfWork uow,
+                                 IBus mediator,
+                                 INotificationHandler<DomainNotification> notifications)
         {
             _uow = uow;
-            _bus = bus;
-            _notifications = notifications;
+            _mediator = mediator;
+            _notifications = (DomainNotificationHandler)notifications;
         }
 
         protected void NotificarValidacoesErro(ValidationResult validationResult)
@@ -31,7 +32,8 @@ namespace Eventos.IO.Domain.CommandHandlers
             foreach (var erro in validationResult.Errors)
             {
                 Console.WriteLine(erro.ErrorMessage);
-               _bus.RaiseEvent(new DomainNotification(erro.PropertyName, erro.ErrorMessage));
+                // RaiseEvent
+                _mediator.RaiseEvent(new DomainNotification(erro.PropertyName, erro.ErrorMessage));
             }
 
         }
@@ -46,7 +48,7 @@ namespace Eventos.IO.Domain.CommandHandlers
             if (responseCommand.Success) return true;
 
             Console.WriteLine("Ocorreu um erro ao salvar os dados no banco.");
-            _bus.RaiseEvent(new DomainNotification("Commit", "Ocorreu um erro ao salvar os dados no banco."));
+            _mediator.RaiseEvent (new DomainNotification("Commit", "Ocorreu um erro ao salvar os dados no banco."));
 
             return false;
 
