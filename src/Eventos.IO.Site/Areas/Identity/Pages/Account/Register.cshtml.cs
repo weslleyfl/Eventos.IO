@@ -2,6 +2,7 @@
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -25,7 +26,7 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IOrganizadorAppService _organizadorAppService;
-        private readonly IDomainNotificationHandler<DomainNotification> _notifications;
+        private readonly DomainNotificationHandler _notifications;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -33,14 +34,14 @@ namespace Eventos.IO.Site.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             IOrganizadorAppService organizadorAppService,
-            IDomainNotificationHandler<DomainNotification> notifications)
+            INotificationHandler<DomainNotification> notifications)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
             _organizadorAppService = organizadorAppService;
-            _notifications = notifications;
+            _notifications = (DomainNotificationHandler)notifications;
         }
 
         [BindProperty]

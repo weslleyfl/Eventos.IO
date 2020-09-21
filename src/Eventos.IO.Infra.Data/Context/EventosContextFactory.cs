@@ -35,12 +35,7 @@ namespace Eventos.IO.Infra.Data.Context
             builder.UseSqlServer(connectionString);
 
             return new EventosContext(builder.Options);
-
-            //var optionsBuilder = new DbContextOptionsBuilder<EventosContext>();
-            //optionsBuilder.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection"));
-
-            //return new EventosContext(optionsBuilder.Options);
+          
         }
     }
 }

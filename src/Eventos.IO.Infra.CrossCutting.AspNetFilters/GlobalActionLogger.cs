@@ -31,6 +31,8 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
+            if (context.Exception == null) return;
+
             if (_hostingEnviroment.IsDevelopment())
             {
                 var data = new
@@ -41,12 +43,14 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
                     Hostname = context.HttpContext.Request.Host.ToString(),
                     AreaAccessed = context.HttpContext.Request.GetDisplayUrl(),
                     Action = context.ActionDescriptor.DisplayName,
-                    TimeStamp = DateTime.Now
+                    TimeStamp = DateTime.Now,
+                    Exceptions = context.Exception
                 };
 
-                _logger.LogInformation(1, data.ToString(), "Log de Auditoria");
+                _logger.LogWarning("Log de Auditoria {message} ", data.ToString());
+                //_logger.LogInformation(1, data.ToString(), "Log de Auditoria");
                 // _httpContextAccessor.HttpContext.RiseError(new ArgumentException(data.ToString(), context.Exception));
-                
+
             }
 
             if (_hostingEnviroment.IsProduction())
@@ -66,13 +70,13 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
                     //Form = Form(context.HttpContext),
                     //ServerVariables = context.HttpContext.Request?.Headers?.Keys.Select(k => new Item(k, context.HttpContext.Request.Headers[k])).ToList(),
                     //QueryString = context.HttpContext.Request?.Query?.Keys.Select(k => new Item(k, context.HttpContext.Request.Query[k])).ToList(),
-                    Exceptions = context.Exception, //?.ToDataList(),
+                    Exceptions = context.Exception //?.ToDataList(),
                     //Detail = JsonConvert.SerializeObject(new { DadoExtra = "Dados a mais", DadoInfo = "Pode ser um Json" })
                 };
 
                 // Serilog
                 //_httpContextAccessor.HttpContext.RiseError(new ArgumentException(message.ToString()));
-                _logger.LogInformation("Log de Auditoria {message} ", message.ToString());
+                _logger.LogWarning("Log de Auditoria {message} ", message.ToString());
                 //_logger.LogWarning("The person {PersonId} could not be found.", message.User);
                 //_logger.LogInformation("Log de Auditoria - Data Acesso {data} - Usuario {user} - Local {host}",
                 //                       message.DateTime, message.User, message.Hostname);
@@ -82,21 +86,7 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
                 //client.Messages.Create(new Guid("19ad15fd-5158-4b7a-b36d-ab56dfe4500a").ToString(), message);
             }
         }
-
-        //private static List<Item> Form(HttpContext httpContext)
-        //{
-        //    try
-        //    {
-        //        return httpContext.Request?.Form?.Keys.Select(k => new Item(k, httpContext.Request.Form[k])).ToList();
-        //    }
-        //    catch (InvalidOperationException)
-        //    {
-        //        // Request not a form POST or similar
-        //    }
-
-        //    return null;
-        //}
-
+            
         public void OnActionExecuting(ActionExecutingContext context)
         {
             //throw new NotImplementedException();

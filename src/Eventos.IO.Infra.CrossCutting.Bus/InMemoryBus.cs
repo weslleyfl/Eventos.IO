@@ -10,9 +10,7 @@ namespace Eventos.IO.Infra.CrossCutting.Bus
 {
     public sealed class InMemoryBus : IBus
     {
-        //public static Func<IServiceProvider> ContainerAccessor { get; set; }
-        //private static IServiceProvider Container => ContainerAccessor();
-
+     
         private readonly IMediator _mediator;
         private readonly IEventStore _eventStore;
 
@@ -27,7 +25,7 @@ namespace Eventos.IO.Infra.CrossCutting.Bus
         /// </summary> 
         public async Task RaiseEvent<T>(T theEvent) where T : Event
         {
-            // Publish(theEvent);
+          
             // https://imasters.com.br/banco-de-dados/event-sourcing-arquitetura-que-pode-salvar-seu-projeto
             // Padrao Event Sourcing
             if (!theEvent.MessageType.Equals("DomainNotification"))
@@ -40,20 +38,9 @@ namespace Eventos.IO.Infra.CrossCutting.Bus
         /// EnviarComando
         /// </summary> 
         public async Task SendCommand<T>(T theCommand) where T : Command
-        {
-            //Publish(theCommand);
+        {            
             await _mediator.Send(theCommand);
         }
-
-        //private static void Publish<T>(T message) where T : Message
-        //{
-        //    if(Container == null) return;
-
-        //    var obj = Container.GetService(message.MessageType.Equals("DomainNotification")
-        //        ? typeof(IDomainNotificationHandler<T>)
-        //        : typeof(IHandler<T>));
-
-        //    ((IHandler<T>)obj).Handle(message);
-        //}
+       
     }
 }

@@ -1,4 +1,6 @@
 ﻿using ElmahCore;
+using Eventos.IO.Domain.Core.Bus;
+using Eventos.IO.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
 {
@@ -18,16 +18,19 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
         private readonly IHostingEnvironment _hostingEnviroment;
         private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IBus _mediator;
 
         public GlobalExceptionHandlingFilter(ILogger<GlobalExceptionHandlingFilter> logger,
                                              IHostingEnvironment hostingEnviroment,
                                              IModelMetadataProvider modelMetadataProvider,
-                                             IHttpContextAccessor httpContextAccessor)
+                                             IHttpContextAccessor httpContextAccessor,
+                                             IBus mediator)
         {
             _logger = logger;
             _hostingEnviroment = hostingEnviroment;
             _modelMetadataProvider = modelMetadataProvider;
             _httpContextAccessor = httpContextAccessor;
+            _mediator = mediator;            
         }
 
         public void OnException(ExceptionContext context)
@@ -36,6 +39,8 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
             if (_hostingEnviroment.IsProduction())
             {
                 _logger.LogError(1, context.Exception, context.Exception.Message);
+                _mediator.RaiseEvent(new DomainNotification(nameof(GlobalExceptionHandlingFilter), context.Exception.Message));
+
             }
 
             var result = new ViewResult() { ViewName = "Error", };
@@ -50,7 +55,7 @@ namespace Eventos.IO.Infra.CrossCutting.AspNetFilters
             var exception = new InvalidOperationException(message: context.Exception.Message,
                                                           innerException: context.Exception);
             _httpContextAccessor.HttpContext.RiseError(exception);
-            
+
             context.ExceptionHandled = true;
             context.Result = result;
 

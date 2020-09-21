@@ -5,11 +5,13 @@ using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.EventosRoot.Commands;
 using Eventos.IO.Domain.EventosRoot.Repository;
+using Eventos.IO.Infra.CrossCutting.AspNetFilters;
 using Eventos.IO.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,7 @@ namespace Eventos.IO.Services.Api.Controllers
     [ApiVersion("1.0")]
     public class EventosController : BaseController
     {
+        private readonly ILogger<EventosController> _logger;
         private readonly IEventoAppService _eventoAppService;
         private readonly IBus _bus;
         private readonly IEventoRepository _eventoRepository;
@@ -34,7 +37,8 @@ namespace Eventos.IO.Services.Api.Controllers
                                  IBus bus, IEventoAppService eventoAppService,
                                  IEventoRepository eventoRepository,
                                  IMapper mapper,
-                                 IMemoryCache cache
+                                 IMemoryCache cache,
+                                 ILogger<EventosController> logger
                                  ) : base(notifications, user, bus)
         {
             _eventoAppService = eventoAppService;
@@ -42,6 +46,7 @@ namespace Eventos.IO.Services.Api.Controllers
             _mapper = mapper;
             _bus = bus;
             _cache = cache;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -57,7 +62,17 @@ namespace Eventos.IO.Services.Api.Controllers
         [Route("eventos/{id:guid}")]
         public EventoViewModel Get(Guid id)
         {
-            return _mapper.Map<EventoViewModel>(_eventoRepository.ObterPorId(id));
+            try
+            {
+                _logger.LogInformation("Request Evento", $"{id}");
+
+                return _mapper.Map<EventoViewModel>(_eventoRepository.ObterPorId(id));
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, exception.ToLogString(Environment.StackTrace));               
+                return new EventoViewModel();
+            }
         }
 
         [HttpGet]
@@ -65,7 +80,7 @@ namespace Eventos.IO.Services.Api.Controllers
         [Route("eventos/categorias")]
         public IEnumerable<CategoriaViewModel> ObterCategorias()
         {
-            string cacheKey = "GreetingCategorias-Invoke";
+            string cacheKey = "GreetingCategorias-Invoke";            
 
             var cacheEntry = _cache.GetOrCreate(cacheKey, (entry) => {
                 // configuração

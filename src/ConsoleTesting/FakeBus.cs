@@ -29,11 +29,11 @@ namespace ConsoleTesting
             {
                 var msgType = message.MessageType;
 
-                if (msgType.Equals("DomainNotification"))
-                {
-                    var obj = new DomainNotificationHandler();
-                    ((IDomainNotificationHandler<T>)obj).Handle(message, cancellationToken: System.Threading.CancellationToken.None);
-                }
+                //if (msgType.Equals("DomainNotification"))
+                //{
+                //    var obj = new DomainNotificationHandler();
+                //    ((IDomainNotificationHandler<T>)obj).Handle(message, cancellationToken: System.Threading.CancellationToken.None);
+                //}
 
                 if (msgType.Equals("RegistrarEventoCommand") || msgType.Equals("ExcluirEventoCommand") ||
                     msgType.Equals("AtualizarEventoCommand"))

@@ -3,6 +3,7 @@ using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.ViewModels;
 using Eventos.IO.Domain.Core.Notifications;
 using Eventos.IO.Domain.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,7 +22,7 @@ namespace Eventos.IO.Site.Controllers
         private readonly IEventoAppService _eventoAppService;
 
         public EventosController(IEventoAppService eventoAppService,
-                                IDomainNotificationHandler<DomainNotification> notifications,
+                                INotificationHandler<DomainNotification> notifications,
                                 IUser user
                                 ) : base(notifications, user)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -42,6 +43,26 @@ namespace Eventos.IO.Services.Api.Configurations
             //{
             //    opt.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
             //});
+        }
+
+        private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+        {
+            var info = new OpenApiInfo
+            {
+                Version = description.ApiVersion.ToString(),
+                Title = $"Eventos.IO API {description.ApiVersion}",
+                Description = "API do site Eventos.IO",
+                TermsOfService = new Uri("http://eventos.io/terms"),
+                Contact = new OpenApiContact { Name = "Desenvolvedor X", Email = "email@eventos.io", Url = new Uri("http://eventos.io") },
+                License = new OpenApiLicense { Name = "MIT", Url = new Uri("http://eventos.io/licensa") }
+            };
+
+            if (description.IsDeprecated)
+            {
+                info.Description += " This API version has been deprecated.";
+            }
+
+            return info;
         }
     }
 }
